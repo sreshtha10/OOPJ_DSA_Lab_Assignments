@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
-
+ 
+ 
+//Length function
 int length(char string[]){
     int count = 0;
     for(int i=0;string[i]!='\0';i++){
@@ -9,7 +11,7 @@ int length(char string[]){
     return count;
 }
 
-
+// Replace function to modify the string in case any pattern is found.
 void replace(char string[], char r_string[],int start,int end){
     int j =0;
     for(int i = start-1;i<end;i++,j++){
@@ -19,22 +21,28 @@ void replace(char string[], char r_string[],int start,int end){
 }
 
 
-
+//Main
 int main(){
+    
     char string[100],p_string[100],r_string[100];
     printf("Enter the string\n");
-    scanf("%s",string);
+    gets(string);
     printf("Enter the pattern string\n");
-    scanf("%s",p_string);
+    gets(p_string);
     printf("Enter the replace string\n");
-    scanf("%s",r_string);
+    gets(r_string);
+    
     int p_length = length(p_string);    // length of p_string
     int r_length = length(r_string);
     int occurence = 0;    // number of occurence of the pattern string
     int p = 0;
+    
+    
     while(string[p] != '\0'){
-        int start,end;
+        
+        int start,end; 
         int i=p,j = 0;
+        
         for(;p_string[j]!='\0';i++,j++){
             if(string[i] == p_string[j]){
                 continue;
@@ -43,6 +51,8 @@ int main(){
                 break;
             }
         }
+        
+        //if j equals p_length this means a pattern is found in the original string.
         if(j == p_length){
             end = i;
             start = i-r_length+1;
@@ -52,7 +62,7 @@ int main(){
         p+= 1;
     }
     
-    if(occurence == 0){
+    if(occurence == 0){  // if occurence is 0, there will not be any replacement in the original string.
         printf("No %s pattern found\n",p_string);
     }
     else{
