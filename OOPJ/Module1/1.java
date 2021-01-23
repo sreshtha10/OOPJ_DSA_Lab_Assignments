@@ -3,119 +3,180 @@ import java.util.*;
 import java.io.*;
 
 
+//item_detail class
 class item_detail{
 	int price;
-	String ingredients[]; // array to store ingredients
+	List<String> ingredients = new ArrayList<String>(); // ArrayList to store ingredients
 	String name;
 	int id;
-	static int total_order = 0;
-	item_detail(int price,String name,int id){
-		Scanner sc = new Scanner(System.in);
+	int total_order = 0;
+	item_detail(int price,String name,int id,String... ingredients){
 		this.price = price;
 		this.name = name;
 		this.id = id;
-		System.out.println("Enter the number of ingredients used");
-		int size = sc.nextInt();
-		this.ingredients = new String[size];
-		System.out.println("Enter the ingredients");
-		for(int i=0;i<size;i++) {
-			this.ingredients[i] = sc.next();
+		for(String ingredient: ingredients) {
+			this.ingredients.add(ingredient);
 		}
-		sc.close();
 	}
-	
-	// end of class
-}
+}// end of class
 
-class person{
+
+
+// Person class
+class Person{
 	String name;
-	int mobile_no;
+	String mobile_no;
 	int order_no;
-	List<item_detail> orderHistory = new Vector<item_detail>();  // array to keep track of items 
-	person(String name,int mobile_no){
+	File orderHistoryFile;
+	List<item_detail> orderHistory = new ArrayList<item_detail>();  // ArrayList to keep track of items 
+	Person(String name,String mobile_no){
 		this.name = name;
 		this.mobile_no = mobile_no;
 		this.order_no =0;
+		// creating a file by the name_mobileno. of the person if it doesn't exists.
+		orderHistoryFile = new File("C:\\Users\\sresh\\Desktop\\Restaurant\\"+this.name+"_"+this.mobile_no+ ".txt");
+		try {
+			orderHistoryFile.createNewFile();
+		}
+		catch(IOException e) {
+			System.out.println("Error occured. Try again !");
+		}
 	}
 	
 	
-	// using Vector to store the items ordered
+	// using ArrayList to store the items ordered
 	void placeOrder(item_detail item) {
-		System.out.println("Your order has been accepted");
-		this.orderHistory.add(item);
+		//using FileOutputStream to write order history in the user file in comma separated format.
+		try {
+			FileOutputStream fo = new FileOutputStream(this.orderHistoryFile,true);
+			String s = item.name+","+item.price+","+item.id+"\n";
+			byte b[] = s.getBytes();
+			fo.write(b);
+			fo.flush();
+			fo.close();
+			System.out.println("Your order has been placed");
+			this.orderHistory.add(item);
+			this.order_no += 1;
+		}
+		catch(IOException e) {
+			System.out.println("Your order can't be place at the moment");
+		}
+		
 		return;
 	}
 	
+	
+	//displaying history of user by reading the user file.
 	void displayHistory() {
-		System.out.println("Order History: ");
-		Iterator i = this.orderHistory.iterator();
-		while(i.hasNext()) {
-			item_detail x = (item_detail)i.next();
-			System.out.println(x.name);
+		try {
+			System.out.println("Order History: ");
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(this.orderHistoryFile)));
+			String currLine;
+			int price,id;
+			String name;
+			while((currLine = br.readLine()) != null) {
+				StringTokenizer st = new StringTokenizer(currLine,",");
+				name = st.nextToken();
+				price = Integer.parseInt(st.nextToken());
+				id = Integer.parseInt(st.nextToken());
+				System.out.println(id+"  "+name+"  "+price);
+			}
+		}
+		catch(IOException e) {
+				System.out.println("Can't display history");
 		}
 		return;
 	}
-	
-	
-	
-}
+}//end of class
 
+
+
+//Restaurant class
 class Restaurant{
-	item_detail menu[];
+	List<item_detail> menu= new ArrayList<item_detail>();
+	int revenue;
+	List<Person> customers = new ArrayList<Person>();  //ArrayList to store details of customers.
 	
-	List<person> customers = new Vector<person>();
 	
-
-	 Restaurant() {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter the number of dishes available");
-		int size = sc.nextInt();
-		this.menu = new item_detail[size];
-		System.out.println("Enter the dishes");
-		for(int i=0;i<size;i++) {
-			System.out.println("Enter the name of the dish");
-			String name = sc.next();
-			System.out.println("Enter the price of the dish");
-			int price = sc.nextInt();
-			System.out.println("Enter the id of the dish");
-			int id = sc.nextInt();
-			this.menu[i] = new item_detail(price,name,id);
+	 Restaurant(item_detail...details ) { // I will add the items in the menu through constructor.
+		 	for(item_detail i: details) {
+		 		this.menu.add(i);  //each item will be added to the menu of the restaurant.
+		 	}
 		}
-		
-		sc.close();
-		
-	}
+	
 	 
-	 
-	void addcustomer(person p) {
+	//adding customer 
+	void addCustomer(Person p) {
 		this.customers.add(p);
 		return;
 	}
-	 
-   void placeOrder(person p) {
-	   System.out.println("Enter the item to be ordered");
+	
+	
+   //placing order	
+   void placeOrder(Person p) {
+	   
+	   }
 	   
 	   
-   }
-	 
-	// void DisplayPersonHistory(person p)
-	 
-	 //void display menu()
-	 
-	 
-	 
-}
+	   
+    
+	void DisplayPersonHistory(Person p) {
+		p.displayHistory();
 
-class Main{
-	public static void main(String args[]) {
-			// Implementation
+	}
+	 
+	//printing the menu of the restaurant.
+	void displayMenu() {
+		System.out.println("Menu:");
+		for(item_detail i : this.menu) {
+			System.out.println(i.id+" "+i.name+" "+i.price);
+		}
+	}
+	 
+	
+	//displaying the bill of the customer.
+	void displayBill(Person p) {
+		// using orderHistory vector of Person class to create bill
+		Iterator itr = p.orderHistory.iterator();
+		p.displayHistory();
+		int sum = 0;
+		while(itr.hasNext()) {
+			item_detail item =(item_detail) itr.next();
+			sum += item.price;
+		}
 		
+		System.out.println("Total bill is Rs."+sum);
+		return;
+	}
+	
+	 
+}//end of class
 
+
+
+//Main class
+class Main{
+	public static void main(String args[]) throws IOException {
+		
+		// creating restaurant menu
+		item_detail item1 = new item_detail(250,"butter chicken", 1,"chicken","butter","tomato","cream");
+		item_detail item2 = new item_detail(230,"butter paneer", 2,"paneer","butter","tomato","cream");
+		item_detail item3 = new item_detail(150,"mix veg", 3,"potato","tomato","chilli");
+		item_detail item4 = new item_detail(200,"dal makhani", 4,"dal","butter","garlic");
+		item_detail item5 = new item_detail(20,"roti", 5,"wheat");
+		item_detail item6 = new item_detail(180,"pulao", 6,"rice","cinnamon","cardamom");
+		item_detail item7 = new item_detail(220,"custard", 7,"apple","sugar","banana","almond");
+		Restaurant restaurant = new Restaurant(item1,item2,item3,item4,item5,item6,item7);
+		
+		
+		restaurant.displayMenu();
+		
 		
 		
 	
+		
 	}
-}
+}//end of class
 
 
 
