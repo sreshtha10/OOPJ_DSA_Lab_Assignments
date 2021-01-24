@@ -94,7 +94,7 @@ class Person{
 //Restaurant class
 class Restaurant{
 	List<item_detail> menu= new ArrayList<item_detail>();
-	int revenue;
+	private int revenue = 0;   //price of each item will be added whenever an order is placed.
 	List<Person> customers = new ArrayList<Person>();  //ArrayList to store details of customers.
 	
 	
@@ -114,7 +114,15 @@ class Restaurant{
 	
    //placing order	
    void placeOrder(Person p) {
-	   
+	   	this.displayMenu();
+	   	System.out.println("Enter the item id to place order");  // taking order by id
+	   	Scanner sc= new Scanner(System.in);
+	   	while(sc.hasNext()) {
+	   		int id = sc.nextInt();
+	   		p.placeOrder(menu.get(id-1));
+	   		this.revenue += (menu.get(id-1)).price;    //adding the price of the placed ordered to the class variable revenue.
+	   	}
+	   	
 	   }
 	   
 	   
@@ -144,10 +152,36 @@ class Restaurant{
 			item_detail item =(item_detail) itr.next();
 			sum += item.price;
 		}
-		
 		System.out.println("Total bill is Rs."+sum);
 		return;
 	}
+	
+	
+	int totalRevenue() {
+		return this.revenue;
+	}
+	
+	
+	void displayPremiumCustomer() {
+		
+		for(Person p: this.customers) {
+			Iterator itr = p.orderHistory.iterator();
+			p.displayHistory();
+			int sum = 0;
+			while(itr.hasNext()) {
+				item_detail item =(item_detail) itr.next();
+				sum += item.price;
+			}
+			if(sum > 1000) {
+				System.out.println(p.name+" "+p.mobile_no);
+			}
+			else {
+				continue;
+			}
+		}
+	}
+	
+	
 	
 	 
 }//end of class
@@ -167,10 +201,83 @@ class Main{
 		item_detail item6 = new item_detail(180,"pulao", 6,"rice","cinnamon","cardamom");
 		item_detail item7 = new item_detail(220,"custard", 7,"apple","sugar","banana","almond");
 		Restaurant restaurant = new Restaurant(item1,item2,item3,item4,item5,item6,item7);
+		Person  current_customer = null;  
 		
 		
-		restaurant.displayMenu();
-		
+		while(true) {
+			System.out.println("********************");
+			System.out.println("1. Display Menu\n2. Total Revenue of Restaurant.\n3. Add Customer.\n4. View Premium Customer.\n5. Place order\n6. Display Bill\n7. Exit");
+			System.out.println("********************");
+			Scanner sc = new Scanner(System.in);
+			int choice = sc.nextInt();
+			switch(choice) {
+			case 1:{
+				restaurant.displayMenu();
+				break;
+			}
+			
+			case 2:{
+				
+				System.out.println("Total revenue is "+restaurant.totalRevenue());
+				System.out.println("********************");
+				break;
+			}
+			
+			case 3:{
+				System.out.print("Enter your name: ");
+				String name = sc.next();
+				System.out.print("\nEnter your mobile number: ");
+				String mobile_no = sc.next();
+				Person p = new Person(name,mobile_no);
+				restaurant.addCustomer(p);
+				current_customer = p;
+				System.out.println("Successfully added !");
+				System.out.println("********************");
+				break;
+			}
+			
+			
+			case 4:{
+				restaurant.displayPremiumCustomer();
+				System.out.println("********************");
+				break;
+			}
+			
+			
+			case 5:{
+				try {
+					restaurant.placeOrder(current_customer);
+					System.out.println("********************");
+					
+				}
+				catch(Exception e) {
+					System.out.println("Add yourself to the customer list, before placing the order");
+					System.out.println("********************");
+				}
+				
+				break;
+			}
+			
+			case 6:{
+				try {
+					restaurant.displayBill(current_customer);
+					System.out.println("********************");
+				}
+				catch(Exception e) {
+					System.out.println("Your bill is Rs. 0");
+					System.out.println("********************");
+				}
+				break;
+			}
+			case 7:{
+				System.out.println("Thank you !");
+				System.out.println("********************");
+				System.exit(0);
+			}
+			default: System.out.println("Invalid Option\n****************");
+			}
+			
+		}
 		
 		
 	
