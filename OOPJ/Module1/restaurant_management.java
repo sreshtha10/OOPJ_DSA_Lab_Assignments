@@ -54,7 +54,6 @@ class Person{
 			fo.write(b);
 			fo.flush();
 			fo.close();
-			System.out.println("Your order has been placed");
 			this.orderHistory.add(item);
 			this.order_no += 1;
 		}
@@ -114,21 +113,25 @@ class Restaurant{
 	
    //placing order	
    void placeOrder(Person p) {
-	   	this.displayMenu();
-	   	System.out.println("Enter the item id to place order");  // taking order by id
+	   p.orderHistory.clear();   // clearing previous history of list as bill will be calc. for only current visit. History of previous is still stored in orderHistoryFile.
+	   	System.out.println("Enter the item id to place order and -1 to finish ordering");  // taking order by id
 	   	Scanner sc= new Scanner(System.in);
-	   	while(sc.hasNext()) {
+	   	while(true) {
 	   		int id = sc.nextInt();
+	   		if(id == -1 ) {
+	   			break;
+	   		}
 	   		p.placeOrder(menu.get(id-1));
 	   		this.revenue += (menu.get(id-1)).price;    //adding the price of the placed ordered to the class variable revenue.
 	   	}
+	   	System.out.println("Your order has been placed");
 	   	
 	   }
 	   
 	   
 	   
     
-	void DisplayPersonHistory(Person p) {
+	void DisplayPersonHistory(Person p) {  
 		p.displayHistory();
 
 	}
@@ -144,12 +147,12 @@ class Restaurant{
 	
 	//displaying the bill of the customer.
 	void displayBill(Person p) {
-		// using orderHistory vector of Person class to create bill
+		// using orderHistory arrayList of Person class to create bill
 		Iterator itr = p.orderHistory.iterator();
-		p.displayHistory();
 		int sum = 0;
 		while(itr.hasNext()) {
 			item_detail item =(item_detail) itr.next();
+			System.out.println(item.id+" "+item.name+" "+item.price);
 			sum += item.price;
 		}
 		System.out.println("Total bill is Rs."+sum);
@@ -166,7 +169,6 @@ class Restaurant{
 		
 		for(Person p: this.customers) {
 			Iterator itr = p.orderHistory.iterator();
-			p.displayHistory();
 			int sum = 0;
 			while(itr.hasNext()) {
 				item_detail item =(item_detail) itr.next();
@@ -203,10 +205,10 @@ class Main{
 		Restaurant restaurant = new Restaurant(item1,item2,item3,item4,item5,item6,item7);
 		Person  current_customer = null;  
 		
-		
+		System.out.println("Welcome");
 		while(true) {
 			System.out.println("********************");
-			System.out.println("1. Display Menu\n2. Total Revenue of Restaurant.\n3. Add Customer.\n4. View Premium Customer.\n5. Place order\n6. Display Bill\n7. Exit");
+			System.out.println("1. Display Menu\n2. Total Revenue of Restaurant.\n3. Add Customer.\n4. View Premium Customer.\n5. Place order\n6. Display Bill\n7. Show History\n8. Exit");
 			System.out.println("********************");
 			Scanner sc = new Scanner(System.in);
 			int choice = sc.nextInt();
@@ -262,14 +264,27 @@ class Main{
 				try {
 					restaurant.displayBill(current_customer);
 					System.out.println("********************");
+					break;
 				}
 				catch(Exception e) {
 					System.out.println("Your bill is Rs. 0");
 					System.out.println("********************");
+					break;
+				}
+				
+			}
+			case 7:{
+				try {
+					current_customer.displayHistory();
+					System.out.println("********************");
+				}
+				catch(Exception e) {
+					System.out.println("No history to show.");
+					System.out.println("********************");
 				}
 				break;
 			}
-			case 7:{
+			case 8:{
 				System.out.println("Thank you !");
 				System.out.println("********************");
 				System.exit(0);
