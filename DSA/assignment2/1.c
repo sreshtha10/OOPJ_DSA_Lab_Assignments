@@ -1,11 +1,7 @@
 /*Implement a menu driven Program in C for the following operations on Singly Linked List (SLL) of Student Data with the fields: Id, Name, Branch, Sem, PhNo
-
 A. Create a SLL of N Students Data by using front insertion.
-
 B. Display the status of SLL and count the number of nodes in it
-
 C. Perform Insertion / Deletion at End of SLL
-
 d. Exit*/
 
 
@@ -14,56 +10,71 @@ d. Exit*/
 
 typedef struct node {
     int id;
-    char[] name;
-    char[] branch;
+    char* name;
+    char *branch;
     int sem;
-    char[] phone_no;
-    struct node next;
+    char *phone_no;
+    struct node *next;
 }Node; 
 
 // declaration
-Node* create(Node* start);
-Node *insertion_at_front(Node* start,int id,char[] name,int sem,char[] phone_no,char[] branch);
+Node *insertion_at_front(Node* start,int id,char *name,int sem,char *phone_no,char *branch);
+Node* creation(Node* start);
 void count_print(Node* start);
-Node* insertion_at_end(Node* start,int id,char[] name,int sem,char[] phone_no,char[] branch);
+Node* insertion_at_end(Node* start,int id,char *name,int sem,char *phone_no,char *branch);
 Node *deletion(Node* start);
 
 //Main function
 int main(){
-    printf("1. Create a SLL of N Students Data by using front insertion. \n2. Display the status of SLL and count the number of nodes in it \n3. Perform Insertion \n4.Deletion at End of SLL \n5. Exit");
+    printf("Choose from the following:\n");
+    printf("1. Create a SLL of N Students Data by using front insertion. \n2. Display and Count the total number of Students \n3. Insertion at end \n4. Deletion at end\n5. Exit");
+    printf("\n********************\n");
     int opt;
     Node *start = NULL;
-    scanf("%d",%opt);
-    switch(opt){
-        case 1:{
+    while(1){
+        scanf("%d",&opt);
+        switch(opt){
+            case 1:{
+                
+                //creation
+                start = creation(start);
+                printf("\n********************\n");
+                break;
+            }
             
-            //creation
-            break;
-        }
-        
-        case 2:{
-            //print and count
+            case 2:{
+                //print and count
+                count_print(start);
+                printf("\n********************\n");
+                break;    
+            }
             
-            break;    
-        }
-        
-        
-        case 3:{
-            //insertion at end
-            break;
-        }
-        
-        case 4:{
-            // Deletion at end
             
-            break;
+            case 3:{
+                //insertion at end
+               
+                printf("\n********************\n");
+                break;
+            }
+            
+            case 4:{
+                // Deletion at end
+                printf("\n********************\n");
+                break;
+            }
+            
+            case 5:{
+                // Exit
+                exit(0);
+            }
+            
+            default: {
+                printf("Invalid choice !");
+                printf("\n********************\n");
+            }
+            
         }
-        
-        case 5:{
-            // Exit
-            exit(0);
-        }
-        
+    
     }
     
     return 0;
@@ -79,7 +90,7 @@ void count_print(Node* start){
     }
     // traversing throught the SLL
     while(p !=NULL){
-        printf("Id:  %d  Name :  %s   Current Semester   Branch %s\n",p->id,p->name,p->sem,p->branch);
+        printf("Id:  %d  Name :  %s   Current Semester %d   Branch %s\n",p->id,p->name,p->sem,p->branch);
         p = p->next;
         count++;
     }
@@ -90,7 +101,7 @@ void count_print(Node* start){
 
 
 // insertion at end
-Node* insertion_at_end(Node* start,int id,char[] name,int sem,char[] phone_no,char[] branch){
+Node* insertion_at_end(Node* start,int id,char *name,int sem,char *phone_no,char *branch){
     Node*tmp =(Node*)malloc(sizeof(Node));
     if(tmp == NULL){
         //memory not available
@@ -144,7 +155,7 @@ Node* deletion(Node* start){
 }
 
 
-Node* insertion_at_front(Node*start,int id,char[] name,int sem,char[] phone_no,char[] branch){
+Node* insertion_at_front(Node* start,int id,char *name,int sem,char *phone_no,char *branch){
     Node*tmp =(Node*)malloc(sizeof(Node));
     if(tmp == NULL){
         //memory not available
@@ -166,24 +177,27 @@ Node* creation(Node* start){
     printf("Enter the number of students\n");
     int n;
     scanf("%d",&n);
-    int id,sem;
-    char[] name,phone_no,branch;
+    
     while(n!=0){
+        int id,sem;
+        char *name,*phone_no,*branch;
+        name = (char*)malloc(sizeof(char)*50);
+        phone_no = (char*)malloc(sizeof(char)*11);
+        branch = (char*)malloc(sizeof(char)*50);
         printf("Enter Student's Name\n");
-        gets(name);
-        printf("Enter the Semester\n");
-        scanf("%d",&sem);
-        printf("Enter the student's id\n");
-        scanf("%d",&id);
-        printf("Enter Student's phone number\n");
-        gets(phone_no);
-        printf("Enter the branch (department) of the student\n");
-        gets(branch);
-        insertion_at_front(Node* start,id,name,sem,phone_no,branch);
+        scanf(" %[^\n]",name);
+        printf("Enter Student's Phone number\n");
+        fflush(stdout);
+        scanf(" %[^\n]",phone_no);
+        printf("Enter Student's Branch\n");
+        fflush(stdout);
+        scanf(" %[^\n]",branch);
+        printf("Enter the Semester ");
+        scanf(" %d",&sem);
+        printf("Enter the student's id ");
+        scanf(" %d",&id);
+        start =  insertion_at_front(start,id,name,sem,phone_no,branch);    //using  insertion_at_front() function to create the list.
         n--;
     }
-    
     return start;
 }
-
-
