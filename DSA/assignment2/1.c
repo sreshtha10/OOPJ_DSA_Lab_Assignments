@@ -1,8 +1,4 @@
-/*Implement a menu driven Program in C for the following operations on Singly Linked List (SLL) of Student Data with the fields: Id, Name, Branch, Sem, PhNo
-A. Create a SLL of N Students Data by using front insertion.
-B. Display the status of SLL and count the number of nodes in it
-C. Perform Insertion / Deletion at End of SLL
-d. Exit*/
+/* I am using only dynamic memory allocation for this question and also using scanf to read strings with spaces*/
 
 
 #include<stdio.h>
@@ -52,13 +48,33 @@ int main(){
             
             case 3:{
                 //insertion at end
-               
+                int id,sem;
+                char *name,*phone_no,*branch;
+                name = (char*)malloc(sizeof(char)*50);
+                phone_no = (char*)malloc(sizeof(char)*11);
+                branch = (char*)malloc(sizeof(char)*50);
+                printf("Enter Student's Name\n");
+                scanf(" %[^\n]",name);
+                printf("Enter Student's Phone number\n");
+                fflush(stdout);
+                scanf(" %[^\n]",phone_no);
+                printf("Enter Student's Branch\n");
+                fflush(stdout);
+                scanf(" %[^\n]",branch);
+                printf("Enter the Semester ");
+                scanf(" %d",&sem);
+                printf("Enter the student's id ");
+                scanf(" %d",&id);
+                start = insertion_at_end(start,id,name,sem,phone_no,branch);
+                printf("Insertion completed");
                 printf("\n********************\n");
                 break;
             }
             
             case 4:{
+                start = deletion(start);
                 // Deletion at end
+                printf("Deletion completed");
                 printf("\n********************\n");
                 break;
             }
