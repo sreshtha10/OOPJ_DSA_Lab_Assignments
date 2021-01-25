@@ -19,7 +19,8 @@ Empl *insertion_at_front(Empl* start,int id,char *name,char* dept,char* designat
 Empl  *creation(Empl* start);
 void count_print(Empl* start);
 Empl* insertion_at_end(Empl* start,int id,char *name,char* dept,char* designation, long long int salary,char *phn);
-Empl *deletion(Empl* start);
+Empl *deletion(Empl* start);  //deletion_at_end
+Empl *deletion_at_front(Empl* start); 
 
 
 
@@ -27,7 +28,7 @@ Empl *deletion(Empl* start);
 //Main function
 int main(){
     printf("Choose from the following:\n");
-    printf("1. Create a DLL of N Employees Data by using end insertion \n2. Display and Count the total number of Employees \n3. Insertion at end \n4. Deletion at end\n5. Exit");
+    printf("1. Create a DLL of N Employees Data by using end insertion \n2. Display and Count the total number of Employees \n3. Insertion at front \n4. Deletion at end\n5. Deletion at front\n6. Exit");
     printf("\n********************\n");
     int opt;
     Empl *start = NULL;
@@ -51,7 +52,7 @@ int main(){
             
             
             case 3:{
-                //insertion at end
+                //insertion at front
                 int id;
                 long long int salary;
                 char *name,*dept,*designation,*phn;
@@ -74,7 +75,7 @@ int main(){
                 scanf(" %lld",&salary);
                 printf("Enter the Employee's id ");
                 scanf(" %d",&id);
-                start = insertion_at_end(start,id,name,dept,designation,salary,phn);
+                start = insertion_at_front(start,id,name,dept,designation,salary,phn);
                 printf("Insertion completed");
                 printf("\n********************\n");
                 break;
@@ -83,12 +84,21 @@ int main(){
             case 4:{
                 start = deletion(start);
                 // Deletion at end
-                printf("Deletion completed");
+                printf("Deletion at end completed");
                 printf("\n********************\n");
                 break;
             }
             
             case 5:{
+                //deletion at front 
+                start = deletion_at_front(start);
+                printf("Deletion at front completed");
+                printf("\n********************\n");
+                break;
+                
+                
+            }
+            case 6:{
                 // Exit
                 exit(0);
             }
@@ -176,6 +186,14 @@ Empl* insertion_at_end(Empl* start,int id,char *name,char* dept,char* designatio
     tmp->salary = salary;
     tmp->phn = phn;
     
+    
+    if(start == NULL){  //DLL is empty
+        start = tmp;
+        tmp->next = NULL;
+        tmp->prev =NULL;
+        return start;
+    }
+    
     p = start;
     while(p->next != NULL){
         p = p->next;
@@ -240,10 +258,32 @@ Empl* creation(Empl* start){
         scanf(" %lld",&salary);
         printf("Enter the Employee's id ");
         scanf(" %d",&id);        
-        start =  insertion_at_front(start,id,name,dept,designation,salary,phn);    //using  insertion_at_front() function to create the DLL.
+        start =  insertion_at_end(start,id,name,dept,designation,salary,phn);    //using  insertion_at_front() function to create the DLL.
         n--;
     }
     return start;
 }
+
+
+//deletion at front 
+
+Empl *deletion_at_front(Empl* start){
+    Empl *tmp = start;
+    if(tmp == NULL){   // DLL is already empty
+        printf("List is already empty\n");
+        return start;
+    }
+    if(start->next == NULL) {  // only one node is present in the SLL
+        start = NULL;
+        free(tmp);
+        return start;
+    }
+    
+    start = start->next;
+    start->prev = NULL;
+    free(tmp);
+    return start;
+}
+
 
 
