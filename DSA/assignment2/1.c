@@ -15,6 +15,7 @@ d. Exit*/
 typedef struct node {
     int id;
     char[] name;
+    char[] branch;
     int sem;
     char[] phone_no;
     struct node next;
@@ -22,9 +23,9 @@ typedef struct node {
 
 // declaration
 Node* create(Node* start);
-Node *insertion_at_front(Node* start,int id,char[] name,int sem,char[] phone_no);
+Node *insertion_at_front(Node* start,int id,char[] name,int sem,char[] phone_no,char[] branch);
 void count_print(Node* start);
-Node* insertion_at_end(Node* start,int id,char[] name,int sem,char[] phone_no;
+Node* insertion_at_end(Node* start,int id,char[] name,int sem,char[] phone_no,char[] branch);
 Node *deletion(Node* start);
 
 //Main function
@@ -78,7 +79,7 @@ void count_print(Node* start){
     }
     // traversing throught the SLL
     while(p !=NULL){
-        printf("Id:  %d  Name :  %s   Current Semester\n",p->id,p->name,p->sem);
+        printf("Id:  %d  Name :  %s   Current Semester   Branch %s\n",p->id,p->name,p->sem,p->branch);
         p = p->next;
         count++;
     }
@@ -89,7 +90,7 @@ void count_print(Node* start){
 
 
 // insertion at end
-Node* insertion_at_end(Node* start,int id,char[] name,int sem,char[] phone_no){
+Node* insertion_at_end(Node* start,int id,char[] name,int sem,char[] phone_no,char[] branch){
     Node*tmp =(Node*)malloc(sizeof(Node));
     if(tmp == NULL){
         //memory not available
@@ -101,6 +102,7 @@ Node* insertion_at_end(Node* start,int id,char[] name,int sem,char[] phone_no){
     tmp->name= name;
     tmp->phone_no = phone_no;
     tmp->sem = sem;
+    tmp->branch = branch;
     
     if(start == NULL){  // SLL is empty
         start = tmp;
@@ -142,7 +144,7 @@ Node* deletion(Node* start){
 }
 
 
-Node* insertion_at_front(Node*start,int id,char[] name,int sem,char[] phone_no){
+Node* insertion_at_front(Node*start,int id,char[] name,int sem,char[] phone_no,char[] branch){
     Node*tmp =(Node*)malloc(sizeof(Node));
     if(tmp == NULL){
         //memory not available
@@ -153,7 +155,7 @@ Node* insertion_at_front(Node*start,int id,char[] name,int sem,char[] phone_no){
     tmp->name= name;
     tmp->phone_no = phone_no;
     tmp->sem = sem;
-    
+    tmp->branch = branch;
     tmp->next = start;
     start = tmp;
     return start;
@@ -165,7 +167,7 @@ Node* creation(Node* start){
     int n;
     scanf("%d",&n);
     int id,sem;
-    char[] name,phone_no;
+    char[] name,phone_no,branch;
     while(n!=0){
         printf("Enter Student's Name\n");
         gets(name);
@@ -175,7 +177,9 @@ Node* creation(Node* start){
         scanf("%d",&id);
         printf("Enter Student's phone number\n");
         gets(phone_no);
-        insertion_at_front(Node* start,id,name,sem,phone_no);
+        printf("Enter the branch (department) of the student\n");
+        gets(branch);
+        insertion_at_front(Node* start,id,name,sem,phone_no,branch);
         n--;
     }
     
