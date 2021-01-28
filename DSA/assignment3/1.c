@@ -14,7 +14,7 @@ Node* add_at_end(Node* last,int data); // insertion at end.
 Node* add_at_beg(Node* last,int data); // insertion at beginning
 Node* add_after(Node * last,int data,int pos); // insertion after a particular position
 Node* delete_at_beg(Node* last); // deletion at beginning of the CLL
-
+Node* delete_at_end(Node* last); // deletion from end
 
 
 
@@ -83,6 +83,7 @@ int main(){
             case 6:{
                 
                 //delete data from end
+                last = delete_at_end(last);
                 printf("******************************\n");
                 break;
             }
@@ -196,6 +197,25 @@ Node* delete_at_beg(Node* last){
     }
     Node* tmp = last->link;
     last->link = tmp->link;
+    free(tmp);
+    return last;
+}
+
+
+//deletion from end
+Node* delete_at_end(Node* last){
+    if(last == NULL){ // list is empty
+        printf("List is already empty\n");
+        return last;
+    }
+    Node* tmp;
+    Node *p = last;
+    while(p->link != last){  // traversing till the second last node.
+        p = p->link;
+    }
+    tmp = last;
+    p->link = last->link;
+    last = p;
     free(tmp);
     return last;
 }
