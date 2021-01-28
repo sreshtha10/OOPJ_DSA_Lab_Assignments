@@ -7,6 +7,21 @@ typedef struct node{
 }Node;
 
 
+
+//function declarations.
+void display(Node *last);  // display method.
+Node* add_at_end(Node* last,int data); // insertion at end.
+
+
+
+
+
+
+
+
+
+
+//Main function
 int main(){
     printf("Choose from the following\n");
     printf("1. Insert data at beginning\n");
@@ -19,60 +34,62 @@ int main(){
     printf("8. Exit\n");
     printf("******************************");
     int opt;
+    Node *last = NULL;
     while(1){
         scanf("%d",&opt);
         switch(opt){
             case 1:{
                 
-                
+                //insert at beginning
                 printf("******************************");
                 break;
             }
             
             case 2:{
                 
-                
+                // insert after a particular node.
                 printf("******************************");
                 break;
             }
             
             case 3:{
                 
-                
+                //insert at end
                 printf("******************************");
                 break;
             }
             
             case 4:{
                 
-                
+                //Delete from beginning
                 printf("******************************");
                 break;
             }
             
             case 5:{
-                
+                //delete before particular position
                 printf("******************************");
                 break;
             }
             
             case 6:{
                 
-                
+                //delete data from end
                 printf("******************************");
                 break;
             }
             
             case 7:{
-                
-                
+                // display
+                display(last);
                 printf("******************************");
                 break;
             }
             
             case 8:{
                 
-                
+                //exit 
+                exit(0);
                 printf("******************************");
                 break;
             }
@@ -83,6 +100,41 @@ int main(){
             }
         }
     }
-    
-    
+}//end of Main function
+
+
+
+
+
+//display method
+void display(Node *last){
+    if(last == NULL){
+        printf("List is empty");
+        return;
+    }
+    Node *p;
+    p = last->link;
+    do{
+        printf("%d ",p->info);
+        p = p->link;
+    }while(p!= last->link);
+    printf("\n");
+    return;
 }
+
+
+
+
+//insertion at end
+Node* add_at_end(Node* last,int data){
+    Node* tmp = (Node*)malloc(sizeof(Node));
+    tmp->info = data;
+    tmp->link = last->link;
+    last->link = tmp;
+    last = tmp;
+    return last;
+}
+
+
+
+
