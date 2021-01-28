@@ -15,6 +15,7 @@ Node* add_at_beg(Node* last,int data); // insertion at beginning
 Node* add_after(Node * last,int data,int pos); // insertion after a particular position
 Node* delete_at_beg(Node* last); // deletion at beginning of the CLL
 Node* delete_at_end(Node* last); // deletion from end
+Node* delete_before(Node *last,int pos); //delete before a particular position
 
 
 
@@ -76,6 +77,9 @@ int main(){
             
             case 5:{
                 //delete before particular position
+                printf("Enter the position\n");
+                scanf("%d",&pos);
+                last = delete_before(last,pos);
                 printf("******************************\n");
                 break;
             }
@@ -220,4 +224,29 @@ Node* delete_at_end(Node* last){
     return last;
 }
 
+//deletion before a particular position
 
+Node *delete_before(Node* last,int pos){
+    int count = 0;
+    int pos_at_del = pos-1;   // position at which node has to be deleted.
+    if(last == NULL){ // List is empty
+        printf("List is already empty\n");
+        return last;
+    }
+    if(pos_at_del == 0){  // deletion of first node
+        return delete_at_beg(last);        
+    }
+    Node *tmp,*p = last->link;
+    while(p->link != last){  // traversing till second last
+        if(count == pos_at_del-1){
+            tmp = p->link;
+            p->link = tmp->link;
+            free(tmp);
+            return last;
+        }        
+        count++;
+        p = p->link;
+    }
+    printf("Index out of bounds\n");
+    return last;
+}
