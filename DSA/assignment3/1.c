@@ -11,13 +11,7 @@ typedef struct node{
 //function declarations.
 void display(Node *last);  // display method.
 Node* add_at_end(Node* last,int data); // insertion at end.
-
-
-
-
-
-
-
+Node* add_at_beg(Node* last,int data); // insertion at beginning
 
 
 
@@ -47,7 +41,7 @@ int main(){
             
             case 2:{
                 
-                // insert after a particular node.
+                // insert after a particular position.
                 printf("******************************");
                 break;
             }
@@ -129,9 +123,29 @@ void display(Node *last){
 Node* add_at_end(Node* last,int data){
     Node* tmp = (Node*)malloc(sizeof(Node));
     tmp->info = data;
+    if(last == NULL){ // list is empty
+        last = tmp;
+        tmp->link = last;
+        return last;
+    }
     tmp->link = last->link;
     last->link = tmp;
     last = tmp;
+    return last;
+}
+
+
+//insertion at beginning
+Node* add_at_beg(Node* last,int data){
+    Node* tmp = (Node*)malloc(sizeof(Node));
+    tmp->info = data;
+    if(last == NULL) {// empty list
+        last = tmp;
+        tmp->link = last;
+        return last;
+    }
+    tmp->link = last->link;
+    last->link = tmp;
     return last;
 }
 
