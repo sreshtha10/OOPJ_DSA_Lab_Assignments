@@ -18,8 +18,14 @@ class User{
 }
 
 
-class HotelBooking{
+class Hotel{
+	String city;   //city in which the hotel is located.
+	int rooms[] = new int[15];   //  1 means room is booked 0 means room is vacant, with 15 rooms
 	
+}
+
+class HotelBooking{
+	Hotel hotels[];  //ArrayList to store all the hotel details  
 	File users;// File which stores the password of different users for login
 	User currUser;
 	int idAssigned = 0;   // each user will be assigned a different id
@@ -142,9 +148,47 @@ class Main{
 				myBookingService.login();
 				System.out.println("************");
 				if(myBookingService.checkStatus() == 1) {
-					//HotelBooking booking 
+					//Hotel booking	
+					System.out.println("Choose from the following");
+					System.out.println("1. Book a room");
+					System.out.println("2. Bill");
+					System.out.println("3. Logout & Exit");
+					System.out.println("************");
+					while(true) {
+						int opt2 = sc.nextInt();
+						switch(opt2) {
+						case 1 :{
+							// room booking
+							
+							System.out.println("************");
+							break;
+						}
 						
+						
+						case 2:{
+							//bill generation
+							
+							
+							System.out.println("************");
+							break;
+						}
+						
+						case 3:{
+							// logout current user.
+							
+							myBookingService.logOut();
+							System.exit(0);
+							System.out.println("************");
+							break;
+						}
+					
+						default:{
+							System.out.println("Invalid Option !");
+						}
+						}
+					}
 				}
+				System.out.println("************");
 				break;
 			}
 			
