@@ -12,6 +12,7 @@ typedef struct node{
 void display(Node *last);  // display method.
 Node* add_at_end(Node* last,int data); // insertion at end.
 Node* add_at_beg(Node* last,int data); // insertion at beginning
+Node* add_after(Node * last,int data,int pos); // insertion after a particular position
 
 
 
@@ -149,6 +150,29 @@ Node* add_at_beg(Node* last,int data){
     return last;
 }
 
+
+
+//insertion after a particular position
+Node* add_after(Node * last,int data,int pos){
+    Node * p,*tmp = (Node*)malloc(sizeof(Node));
+    tmp->info = data;
+    p = last->link;
+    int count = 0;
+    do{
+        if(count == pos){
+            tmp->link = p->link;
+            p->link = tmp;
+            if(p == last){
+                last = tmp;
+            }
+            return last;
+        }
+        p = p->link;
+        count++;
+    }while(p!=last->link);
+    printf("Index out of range\n");
+    return last;
+}
 
 
 
