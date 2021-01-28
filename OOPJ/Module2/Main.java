@@ -64,13 +64,14 @@ class HotelBooking{
 				return;
 			}
 			else {
+				
 				System.out.println("Password does not match !");
 				signUp(user);
 				return;
 			}
 		}
 		catch(IOException e) {
-			System.out.println("Account cannot be created. Try again later !");
+			System.out.println("Account cannot be created. Try again later !"+e);
 			return;
 		}
 		
