@@ -13,6 +13,8 @@ void display(Node *last);  // display method.
 Node* add_at_end(Node* last,int data); // insertion at end.
 Node* add_at_beg(Node* last,int data); // insertion at beginning
 Node* add_after(Node * last,int data,int pos); // insertion after a particular position
+Node* delete_at_beg(Node* last); // deletion at beginning of the CLL
+
 
 
 
@@ -67,6 +69,7 @@ int main(){
             
             case 4:{
                 //Delete from beginning
+                last = delete_at_beg(last);
                 printf("******************************\n");
                 break;
             }
@@ -184,5 +187,17 @@ Node* add_after(Node * last,int data,int pos){
     return last;
 }
 
+
+//deletion at beginning
+Node* delete_at_beg(Node* last){
+    if(last == NULL){ // list is empty
+        printf("List is already empty\n");
+        return last;
+    }
+    Node* tmp = last->link;
+    last->link = tmp->link;
+    free(tmp);
+    return last;
+}
 
 
