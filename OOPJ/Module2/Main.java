@@ -18,14 +18,15 @@ class User{
 }
 
 
-class Hotel{
+class HotelBooking{
+	
 	File users;// File which stores the password of different users for login
 	User currUser;
 	int idAssigned = 0;   // each user will be assigned a different id
 	private int loggedin = -1; // to check if current user is logged in or not.
-	Hotel(){
+	HotelBooking(){
 		try {
-			this.users = new File("C:\\Users\\sresh\\Desktop\\Hotel\\users.txt");
+			this.users = new File("C:\\Users\\sresh\\Desktop\\HotelBooking\\users.txt");
 			users.createNewFile();
 		}
 		catch(IOException e) {
@@ -33,6 +34,8 @@ class Hotel{
 		}
 	}
 	
+	
+	//method to signUp
 	public void signUp(User user) {
 		try {
 			Scanner scanner = new Scanner(System.in);
@@ -67,7 +70,7 @@ class Hotel{
 		
 	}
 	
-	
+	// method for login
 	public void login() {
 		try {
 		Scanner sc = new Scanner(System.in);
@@ -107,16 +110,23 @@ class Hotel{
 	}
 	
 	
+	// method to logout the current user.
 	public void logOut() {
 		this.loggedin = -1;
 		System.out.println("Logged out");
 		return;
 	}
+	
+	
+	//method to check if any user is logged in or not
+	public int checkStatus() {
+		return this.loggedin;
+	}
 }
 
 class Main{
 	public static void main(String args[]){
-		Hotel hotel = new Hotel();
+		HotelBooking myBookingService = new HotelBooking();
 		System.out.println("Choose from the following");
 		System.out.println("1. Login ");
 		System.out.println("2. Signup");
@@ -129,8 +139,12 @@ class Main{
 				
 			case 1:{
 				//login
-				hotel.login();
+				myBookingService.login();
 				System.out.println("************");
+				if(myBookingService.checkStatus() == 1) {
+					//HotelBooking booking 
+						
+				}
 				break;
 			}
 			
@@ -140,15 +154,15 @@ class Main{
 				String name = sc.next();
 				System.out.println("Enter your age");
 				int age = sc.nextInt();
-				User user = new User(name, age, hotel.idAssigned);
-				hotel.signUp(user);
+				User user = new User(name, age, myBookingService.idAssigned);
+				myBookingService.signUp(user);
 				System.out.println("************");
 				break;
 			}
 			
 			case 3: {
 				//exit
-				hotel.logOut();
+				myBookingService.logOut();
 				System.exit(0);
 				
 			}
