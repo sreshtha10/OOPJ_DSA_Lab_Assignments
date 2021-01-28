@@ -32,17 +32,25 @@ int main(){
     Node *last = NULL;
     while(1){
         scanf("%d",&opt);
+        int data,pos;
         switch(opt){
             case 1:{
                 
                 //insert at beginning
+                printf("Enter the value\n");
+                scanf("%d",&data);
+                last = add_at_beg(last,data);
                 printf("******************************");
                 break;
             }
             
             case 2:{
-                
                 // insert after a particular position.
+                printf("Enter the value\n");
+                scanf("%d",&data);
+                printf("Enter the position\n");
+                scanf("%d",&pos);
+                last = add_after(last,data,pos);
                 printf("******************************");
                 break;
             }
@@ -50,12 +58,14 @@ int main(){
             case 3:{
                 
                 //insert at end
+                printf("Enter the value\n");
+                scanf("%d",&data);
+                last = add_at_end(last,data);
                 printf("******************************");
                 break;
             }
             
             case 4:{
-                
                 //Delete from beginning
                 printf("******************************");
                 break;
