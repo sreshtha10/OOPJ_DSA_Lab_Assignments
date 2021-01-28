@@ -27,7 +27,7 @@ int main(){
     printf("6. Delete data from End\n");
     printf("7. Display the Current status\n");
     printf("8. Exit\n");
-    printf("******************************");
+    printf("******************************\n");
     int opt;
     Node *last = NULL;
     while(1){
@@ -40,7 +40,7 @@ int main(){
                 printf("Enter the value\n");
                 scanf("%d",&data);
                 last = add_at_beg(last,data);
-                printf("******************************");
+                printf("******************************\n");
                 break;
             }
             
@@ -51,7 +51,7 @@ int main(){
                 printf("Enter the position\n");
                 scanf("%d",&pos);
                 last = add_after(last,data,pos);
-                printf("******************************");
+                printf("******************************\n");
                 break;
             }
             
@@ -61,33 +61,33 @@ int main(){
                 printf("Enter the value\n");
                 scanf("%d",&data);
                 last = add_at_end(last,data);
-                printf("******************************");
+                printf("******************************\n");
                 break;
             }
             
             case 4:{
                 //Delete from beginning
-                printf("******************************");
+                printf("******************************\n");
                 break;
             }
             
             case 5:{
                 //delete before particular position
-                printf("******************************");
+                printf("******************************\n");
                 break;
             }
             
             case 6:{
                 
                 //delete data from end
-                printf("******************************");
+                printf("******************************\n");
                 break;
             }
             
             case 7:{
                 // display
                 display(last);
-                printf("******************************");
+                printf("******************************\n");
                 break;
             }
             
@@ -95,13 +95,13 @@ int main(){
                 
                 //exit 
                 exit(0);
-                printf("******************************");
+                printf("******************************\n");
                 break;
             }
             
             default :{
                 printf("Invalid Option\n");
-                printf("******************************");
+                printf("******************************\n");
             }
         }
     }
