@@ -44,18 +44,20 @@ public class Spindle {
 		Spinspeeds speed = new Spinspeeds();
 		try {
 			Scanner scanner = new Scanner(System.in);
-			System.out.println("Enter Minspeed: ");
+			System.out.println("Enter the minimum speed: ");
 			speed.minSpeed = scanner.nextDouble();
 			if (speed.minSpeed == 0) {
-				throw new MyException("Minspeed cant be zero");
+				throw new MyException("Minimum speed cannot be zero");
 			}
-			System.out.println("Enter Maxspeed: ");
+			System.out.println("Enter the maximum speed: ");
 			speed.maxSpeed = scanner.nextDouble();
+			//throwing custom exception if maxSpeed is 0
 			if (speed.maxSpeed == 0) {
-				throw new MyException("Maxspeed cant be zero");
+				throw new MyException("Maximum speed cannot be zero");
 			}
 			System.out.println("Enter number of speeds: ");
 			speed.numSpeed = scanner.nextInt();
+			//throwing custom exception if n <=1
 			if (speed.numSpeed == 1 || speed.numSpeed < 1) {
 				throw new MyException("Number of speed cant be one or less than one");
 			}
@@ -64,6 +66,7 @@ public class Spindle {
 			System.out.println("******************");
 			speed.displaySpeed();
 			System.out.println("******************");
+			scanner.close();
 		} catch (MyException e) {
 			System.out.println(e);
 		}
