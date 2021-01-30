@@ -11,7 +11,7 @@ class MyException extends Exception {
 	}
 }
 
-class Spinspeeds {
+class SpindleSpeeds {
 	double minSpeed;
 	double maxSpeed;
 	double ratio;
@@ -32,7 +32,7 @@ class Spinspeeds {
 	public void displaySpeed() {
 		System.out.println("Speeds :");
 		for (int i = 0; i <= this.numSpeed; i++) {
-			System.out.print(this.speed[i] + "\t");
+			System.out.println(this.speed[i]);
 		}
 	}
 
@@ -41,19 +41,19 @@ class Spinspeeds {
 public class Spindle {
 
 	public static void main(String[] args) {
-		Spinspeeds speed = new Spinspeeds();
+		SpindleSpeeds speed = new SpindleSpeeds();
 		try {
 			Scanner scanner = new Scanner(System.in);
-			System.out.println("Enter the minimum speed: ");
+			System.out.println("Enter the minimum speed");
 			speed.minSpeed = scanner.nextDouble();
 			if (speed.minSpeed == 0) {
-				throw new MyException("Minimum speed cannot be zero");
+				throw new MyException("Minimum speed cannot be zero !");
 			}
-			System.out.println("Enter the maximum speed: ");
+			System.out.println("Enter the maximum speed");
 			speed.maxSpeed = scanner.nextDouble();
 			//throwing custom exception if maxSpeed is 0
 			if (speed.maxSpeed == 0) {
-				throw new MyException("Maximum speed cannot be zero");
+				throw new MyException("Maximum speed cannot be zero !");
 			}
 			System.out.println("Enter number of speeds: ");
 			speed.numSpeed = scanner.nextInt();
@@ -61,11 +61,9 @@ public class Spindle {
 			if (speed.numSpeed == 1 || speed.numSpeed < 1) {
 				throw new MyException("Number of speed cant be one or less than one");
 			}
-			System.out.println("******************");
 			speed.getSpeed();
-			System.out.println("******************");
 			speed.displaySpeed();
-			System.out.println("******************");
+			
 			scanner.close();
 		} catch (MyException e) {
 			System.out.println(e);
