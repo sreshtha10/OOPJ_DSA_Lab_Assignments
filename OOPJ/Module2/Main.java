@@ -32,11 +32,12 @@ class Hotel{
 	String name;  // name of the hotel
 	List<Traveller> travellers;
 	String city;   //city in which the hotel is located.
-	int rooms[] = new int[15];   //  1 means room is booked 0 means room is vacant, with 15 rooms
+	int rooms[];   //  1 means room is booked 0 means room is vacant, with 15 rooms
 	Hotel(String name, String city) {
 		this.name = name;
 		this.city = city;
 		this.travellers = new ArrayList<Traveller>();
+		this.rooms = new int[15];
 	}
 }
 
@@ -172,8 +173,9 @@ class HotelBooking{
 	}
 	
 	
-	//method for roomBooking
-	public void RoomBooking(){
+	
+	//method for selecting the hotel in which user is staying
+	public void hotelBooking(){
 		Scanner scanner = new Scanner(System.in);
 		this.displayCities();
 		System.out.println("Please choose a city:");
@@ -182,12 +184,39 @@ class HotelBooking{
 		while(itr.hasNext()) {
 			if(c.equals(((Hotel)itr.next()).city)) {
 				System.out.println("Hotels available :"+((Hotel)itr.next()).name);
+				System.out.println("Do you want to continue? 1/0");
+				int x = scanner.nextInt();
+				if(x == 1) {
+					this.roomBooking((Hotel)itr.next());
+				}
+				else {
+					return;
+				}
 				
 			}
 		}
 	}
+	
+	
+	
+	//method to book a room once a hotel is selected
+	public void roomBooking(Hotel hotel) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Each room has a capacity for two adults. How many rooms do you wanna book?");
+		int numRooms = sc.nextInt();
+		for(int i=0;i<15;i++) {
+			if(hotel.rooms[i] == 0) {  // 0 means room is vacant
+				
+			}
+		}
+		
+	}
 }
 
+
+
+
+//Main
 class Main{
 	public static void main(String args[]){
 		HotelBooking myBookingService = new HotelBooking();
@@ -217,7 +246,7 @@ class Main{
 						switch(opt2) {
 						case 1 :{
 							// room booking
-							myBookingService.RoomBooking();
+							myBookingService.hotelBooking();
 							System.out.println("************");
 							break;
 						}
