@@ -1,7 +1,6 @@
 package project0;
 import java.io.*;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 class User{
@@ -18,19 +17,50 @@ class User{
 }
 
 
-class Hotel{
-	String city;   //city in which the hotel is located.
-	int rooms[] = new int[15];   //  1 means room is booked 0 means room is vacant, with 15 rooms
+
+class Traveller extends User{
+
+	Traveller(String name, int age, int id) {
+		super(name, age, id);
+	}
 	
 }
 
+
+
+class Hotel{
+	String name;  // name of the hotel
+	List<Traveller> travellers;
+	String city;   //city in which the hotel is located.
+	int rooms[] = new int[15];   //  1 means room is booked 0 means room is vacant, with 15 rooms
+	Hotel(String name, String city) {
+		this.name = name;
+		this.city = city;
+		this.travellers = new ArrayList<Traveller>();
+	}
+}
+
+
 class HotelBooking{
-	Hotel hotels[];  //ArrayList to store all the hotel details  
+	
+	List<Hotel> hotels = new ArrayList<Hotel>(); //ArrayList to store all the hotel details  
 	File users;// File which stores the password of different users for login
+	File userBills;   // This file will store the bill of each user.
 	User currUser;
 	int idAssigned = 0;   // each user will be assigned a different id
 	private int loggedin = -1; // to check if current user is logged in or not.
 	HotelBooking(){
+		hotels.add(new Hotel("Taj","New Delhi"));
+		hotels.add(new Hotel("Paradise","Varanasi"));
+		hotels.add(new Hotel("The Imperial Hotel","Jaipur"));
+		hotels.add(new Hotel("Elsewhere","Goa"));
+		hotels.add(new Hotel("The Leela Palace","Bengaluru"));
+		hotels.add(new Hotel("Surya Samudra","Kovalam"));
+		hotels.add(new Hotel("Taj Lake Palace","Udaipur"));
+		hotels.add(new Hotel("Umaid Bhawan Palace","Jodhpur"));
+		hotels.add(new Hotel("Lotus House Boat","Kerela"));
+		
+		
 		try {
 			this.users = new File("C:\\Users\\sresh\\Desktop\\HotelBooking\\users.txt");
 			users.createNewFile();
@@ -129,6 +159,24 @@ class HotelBooking{
 	public int checkStatus() {
 		return this.loggedin;
 	}
+	
+	
+	//to display the cities
+	private void displayCities() {
+		System.out.println("Cities in which hotels are available:");
+		Iterator itr = hotels.iterator();
+		while(itr.hasNext()) {
+			System.out.println(((Hotel)(itr.next())).city);
+		}
+		return;
+	}
+	
+	
+	//method for roomBooking
+	public void RoomBooking(){
+		this.displayCities();
+		
+	}
 }
 
 class Main{
@@ -160,7 +208,7 @@ class Main{
 						switch(opt2) {
 						case 1 :{
 							// room booking
-							
+							myBookingService.RoomBooking();
 							System.out.println("************");
 							break;
 						}
@@ -168,7 +216,6 @@ class Main{
 						
 						case 2:{
 							//bill generation
-							
 							
 							System.out.println("************");
 							break;
