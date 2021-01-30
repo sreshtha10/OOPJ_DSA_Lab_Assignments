@@ -174,8 +174,17 @@ class HotelBooking{
 	
 	//method for roomBooking
 	public void RoomBooking(){
+		Scanner scanner = new Scanner(System.in);
 		this.displayCities();
-		
+		System.out.println("Please choose a city:");
+		String c = scanner.next();
+		Iterator itr = hotels.iterator();
+		while(itr.hasNext()) {
+			if(c.equals(((Hotel)itr.next()).city)) {
+				System.out.println("Hotels available :"+((Hotel)itr.next()).name);
+				
+			}
+		}
 	}
 }
 
