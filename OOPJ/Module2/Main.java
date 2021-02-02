@@ -221,13 +221,15 @@ class HotelBooking extends CheckDate{
 		System.out.println("Please choose a city:");
 		String c = scanner.next();
 		Iterator itr = hotels.iterator();
+		Object i;
 		while(itr.hasNext()) {
-			if(c.equals(((Hotel)itr.next()).city)) {
-				System.out.println("Hotels available :"+((Hotel)itr.next()).name);
+			i = itr.next();
+			if(c.equals(((Hotel)i).city)) {
+				System.out.println("Hotels available :"+((Hotel)i).name);
 				System.out.println("Do you want to continue? 1/0");
 				int x = scanner.nextInt();
 				if(x == 1) {
-					this.roomBooking((Hotel)itr.next());
+					this.roomBooking((Hotel)i);
 				}
 				else {
 					return;
@@ -250,45 +252,49 @@ class HotelBooking extends CheckDate{
 				int numDays = sc.nextInt();
 				
 				//check in
-				System.out.println("Please enter the check in date in dd//mm//yyyy format");
+				System.out.println("Please enter the check in date in dd/mm/yyyy format");
 				String checkinDate = sc.next();
-				StringTokenizer st1 = new StringTokenizer(checkinDate);
-				String checkinDay = st1.nextToken();
-				String checkinMonth = st1.nextToken();
-				String checkinYear = st1.nextToken();
+				
 				//checking if the entered date is in right format or not.
 				try {
-					if(!this.isValid(checkinDate)) {
-						throw new InvalidDateFormat("Please enter the date in dd//mm//yyyy format");
+					if(!isValid(checkinDate)) {
+						//not valid format
+						throw new InvalidDateFormat("Please enter the date in dd/mm/yyyy format");
 					}
 				}
 				catch(InvalidDateFormat e) {
 					System.out.println(e);
 				}
+
+				StringTokenizer st1 = new StringTokenizer(checkinDate,"/");
+				String checkinDay = st1.nextToken();
+				String checkinMonth = st1.nextToken();
+				String checkinYear = st1.nextToken();
 				
 				//check out 
 				System.out.println("Please enter the check out date");
 				String checkoutDate = sc.next();
-				StringTokenizer st2 = new StringTokenizer(checkoutDate);
-				String checkoutDay = st2.nextToken();
-				String checkoutMonth = st2.nextToken();
-				String checkoutYear = st2.nextToken();
 				
 				//checking if the entered date is in right format or not.
-				
 				try {
-					if(!this.isValid(checkoutDate)) {
-						throw new InvalidDateFormat("Please enter the date in dd//mm//yyyy format");
+					if(!isValid(checkoutDate)) {
+						//not valid format
+						throw new InvalidDateFormat("Please enter the date in dd/mm/yyyy format");
 					}
 				}
 				catch(InvalidDateFormat e) {
 					System.out.println(e);
 				}
 				
+				StringTokenizer st2 = new StringTokenizer(checkoutDate,"/");
+				String checkoutDay = st2.nextToken();
+				String checkoutMonth = st2.nextToken();
+				String checkoutYear = st2.nextToken();
+				
+				
 				
 				//writing check in and check out date in file userBookings
 				try {
-					Scanner sc1 = new Scanner(System.in);
 					FileOutputStream fo =new FileOutputStream(this.userBookings,true);
 					String write = currUser.id+","+hotel.price + "," +numDays+","+","+","+","+checkinDate+","+checkoutDate;
 					byte b[] = write.getBytes();
@@ -296,7 +302,7 @@ class HotelBooking extends CheckDate{
 					hotel.rooms[i] = 1;
 					System.out.println("Your room is booked.");
 					System.out.println("Are you a traveller? 1/0");
-					int opt = sc1.nextInt();
+					int opt = sc.nextInt();
 					if(opt == 1) {
 						hotel.travellers.add((Traveller) currUser);
 					}
