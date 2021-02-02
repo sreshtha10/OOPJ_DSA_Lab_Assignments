@@ -89,7 +89,7 @@ class HotelBooking extends CheckDate{
 	File userBills;   // This file will store the bill of each user.
 	File userBookings; // this will contain the booking dates
 	User currUser;
-	int idAssigned = 0;   // each user will be assigned a different id
+	int idAssigned;   // each user will be assigned a different id
 	private int loggedin = -1; // to check if current user is logged in or not.
 	HotelBooking(){
 		hotels.add(new Hotel("Taj","New Delhi",1000));
@@ -114,6 +114,19 @@ class HotelBooking extends CheckDate{
 		}
 		catch(IOException e) {
 			System.out.println("Error occured !");
+		}
+		
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(this.users)));
+			String currLine;
+			this.idAssigned =0;
+			while((currLine = br.readLine())!= null) {
+				this.idAssigned ++;
+			}
+		}
+		catch(IOException e) {
+			System.out.println("Error occured !");
+			
 		}
 	}
 	
