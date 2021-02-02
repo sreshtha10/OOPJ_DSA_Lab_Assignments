@@ -87,101 +87,56 @@ Treenode* insert(Treenode* ptr,int ikey){
               case 2. Node to be deleted has only 1 child.
               case 3. Node to be deleted has 2 child.
     */
-    
-Treenode* delete(Treenode* root,int dkey){
-    Treenode* ptr = root,*par = NULL;
-    while(ptr != NULL){
-        if(dkey == ptr->data){
-            break;
-        }
-        par = ptr;
-        if(dkey > ptr->data){
-            ptr = ptr->rchild;
-        }
-        else{
-            ptr = ptr->lchild;   
-        }
-    }
-    if(ptr == NULL) // element not found
+Treenode * minimum(Treenode *root)
+{
+    if(root == NULL)
+        return NULL;
+    else if(root->lchild != NULL) // node with minimum value will have no left child
+        return minimum(root->lchild); // left most element will be minimum
+    return root;
+}
+
+
+Treenode* delete(Treenode*root, int x)
+{
+    //searching for the item to be deleted
+    if(root==NULL)
+        return NULL;
+    if (x>root->data)
+        root->rchild = delete(root->rchild, x);
+    else if(x<root->data)
+        root->lchild = delete(root->lchild, x);
+    else
     {
-        printf("%d not found in the BST\n",dkey);
-        return root;
-    }
-    else if(ptr->lchild == NULL && ptr->rchild == NULL){ // no child.
-        // case 1
-        if(par == NULL){ // root node to be deleted
-            root = NULL;
+        //No Children
+        if(root->lchild==NULL && root->rchild==NULL)
+        {
+            free(root);
+            return NULL;
         }
-        else if(par->lchild == ptr){
-            par->lchild = NULL;
-        }
-        else{
-            par->rchild = NULL;
-        }
-        free(ptr);
-        return root;
-    }
-    else if(ptr->lchild == NULL || ptr->rchild == NULL){ // one child.
-        // case 2.
-        if(par == NULL){ // ptr is root node
-            if(ptr->lchild != NULL){
-                root = ptr->lchild;
-                free(ptr);
-                return root;
+
+        //One Child
+        else if(root->lchild==NULL || root->rchild==NULL)
+        {
+            Treenode *temp;
+            if(root->lchild==NULL){
+                temp = root->rchild;
             }
             else{
-                root = ptr->rchild;
-                free(ptr);
-                return root;
+                temp = root->lchild;
             }
+            free(root);
+            return temp;
         }
-        else if(ptr == par->lchild){
-            if(ptr->lchild != NULL){
-                par->lchild = ptr->lchild;
-                free(ptr);
-                return root;
-            }
-            else{
-                par->lchild = ptr->rchild;
-                free(ptr);
-                return root;
-                
-            }
+
+        //Two Children
+        else
+        {
+            Treenode *temp = minimum(root->rchild);
+            root->data = temp->data;
+            root->rchild = delete(root->rchild, temp->data);
         }
-        else{
-            if(ptr->lchild != NULL){
-                par->rchild = ptr->lchild;
-                free(ptr);
-                return root;
-            }
-            else{
-                par->rchild = ptr->rchild;
-                free(ptr);
-                return root;
-                
-            }
-        }
-        
     }
-    else{ // node to be deleted has two childs.
-        // case 3.
-        int x;
-        Treenode* tmp = ptr->rchild,*tmp2 = ptr->rchild;
-        while(tmp->lchild != NULL){
-            tmp2 = tmp;
-            tmp = tmp->lchild;
-        }
-        x = tmp->data;
-        tmp2->lchild = NULL;
-        free(tmp);
-        ptr->data = x;
-        if(par == NULL){
-            root = ptr;
-        }
-        return root;
-    }
-    
-    
     return root;
 }
 
@@ -233,6 +188,11 @@ int main(void){
             case 6:{
                 //Exit
                 exit(0);
+            }
+            
+            default:{
+                printf("Invalid Option\n");
+                printf("********************\n");
             }
         }
     }
