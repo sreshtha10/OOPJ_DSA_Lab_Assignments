@@ -287,6 +287,9 @@ class HotelBooking extends CheckDate{
 				//writing check in and check out date in file userBookings
 				try {
 					FileOutputStream fo =new FileOutputStream(this.userBookings,true);
+					String write = currUser.id+","+checkinDate+checkoutDate;
+					byte b[] = write.getBytes();
+					fo.write(b);
 					System.out.println("Your room is booked.");
 					return;
 				}
