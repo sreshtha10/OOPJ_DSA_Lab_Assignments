@@ -1,304 +1,459 @@
 package project0;
-import java.util.*;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
-//item_detail class
-class item_detail{
-	int price;
-	List<String> ingredients = new ArrayList<String>(); // ArrayList to store ingredients
+//interface DateValidator
+interface DateValidator{
+	boolean isValid(String dateString);
+}
+
+//abstract class to check date
+abstract class CheckDate implements DateValidator{
+	String dateFormat = "dd/mm/yyyy";
+	
+	public void DateValidatorUsingDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+	
+	public abstract boolean isValid(String dateString);
+}
+
+
+
+//custom exception for invalid date format
+class InvalidDateFormat extends Exception{
+	public InvalidDateFormat(String s) {
+		super(s);
+	}
+}
+
+
+class User{
 	String name;
+	int age;
 	int id;
-	int total_order = 0;
-	item_detail(int price,String name,int id,String... ingredients){
-		this.price = price;
+	String password;
+	User(String name,int age,int id){
 		this.name = name;
+		this.age = age;
 		this.id = id;
-		for(String ingredient: ingredients) {
-			this.ingredients.add(ingredient);
-		}
 	}
-}// end of class
+
+}
 
 
 
-// Person class
-class Person{
-	String name;
-	String mobile_no;
-	int order_no;
-	File orderHistoryFile;
-	List<item_detail> orderHistory = new ArrayList<item_detail>();  // ArrayList to keep track of items 
-	Person(String name,String mobile_no){
+class Traveller extends User{
+
+	Traveller(String name, int age, int id) {
+		super(name, age, id);
+	}
+	
+}
+
+
+
+class Hotel{
+	String name;  // name of the hotel
+	List<Traveller> travellers;
+	String city;   //city in which the hotel is located.
+	int rooms[];  
+	final int price;  // charge for one night stay
+	Hotel(String name, String city,int price) {
 		this.name = name;
-		this.mobile_no = mobile_no;
-		this.order_no =0;
-		// creating a file by the name_mobileno. of the person if it doesn't exists.
-		orderHistoryFile = new File("C:\\Users\\sresh\\Desktop\\Restaurant\\"+this.name+"_"+this.mobile_no+ ".txt");
-		try {
-			orderHistoryFile.createNewFile();
+		this.city = city;
+		this.travellers = new ArrayList<Traveller>();
+		this.rooms = new int[15];
+		for(int i =0;i<15;i++) {
+			this.rooms[i] = 0;    // initially all rooms will be vacant.
 		}
-		catch(IOException e) {
-			System.out.println("Error occured. Try again !");
-		}
+		this.price = price;
 	}
+}
+
+
+class HotelBooking extends CheckDate{
 	
-	
-	// using ArrayList to store the items ordered
-	void placeOrder(item_detail item) {
-		//using FileOutputStream to write order history in the user file in comma separated format.
-		try {
-			FileOutputStream fo = new FileOutputStream(this.orderHistoryFile,true);
-			String s = item.name+","+item.price+","+item.id+"\n";
-			byte b[] = s.getBytes();
-			fo.write(b);
-			fo.flush();
-			fo.close();
-			this.orderHistory.add(item);
-			this.order_no += 1;
-		}
-		catch(IOException e) {
-			System.out.println("Your order can't be place at the moment");
-		}
+	List<Hotel> hotels = new ArrayList<Hotel>(); //ArrayList to store all the hotel details  
+	File users;// File which stores the password of different users for login
+	File userBills;   // This file will store the bill of each user.
+	File userBookings; // this will contain the booking dates
+	User currUser;
+	int idAssigned = 0;   // each user will be assigned a different id
+	private int loggedin = -1; // to check if current user is logged in or not.
+	HotelBooking(){
+		hotels.add(new Hotel("Taj","New Delhi",1000));
+		hotels.add(new Hotel("Paradise","Varanasi",2000));
+		hotels.add(new Hotel("The Imperial Hotel","Jaipur",3000));
+		hotels.add(new Hotel("Elsewhere","Goa",600));
+		hotels.add(new Hotel("The Leela Palace","Bengaluru",800));
+		hotels.add(new Hotel("Surya Samudra","Kovalam",900));
+		hotels.add(new Hotel("Taj Lake Palace","Udaipur",1200));
+		hotels.add(new Hotel("Umaid Bhawan Palace","Jodhpur",2200));
+		hotels.add(new Hotel("Lotus House Boat","Kerela",3400));
 		
-		return;
-	}
-	
-	
-	//displaying history of user by reading the user file.
-	void displayHistory() {
+		
 		try {
-			System.out.println("Order History: ");
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(this.orderHistoryFile)));
-			String currLine;
-			int price,id;
-			String name;
-			while((currLine = br.readLine()) != null) {
-				StringTokenizer st = new StringTokenizer(currLine,",");
-				name = st.nextToken();
-				price = Integer.parseInt(st.nextToken());
-				id = Integer.parseInt(st.nextToken());
-				System.out.println(id+"  "+name+"  "+price);
-			}
+			this.users = new File("C:\\Users\\sresh\\Desktop\\HotelBooking\\users.txt");
+			this.userBills = new File("C:\\\\Users\\\\sresh\\\\Desktop\\\\HotelBooking\\\\userBills.txt");
+			this.userBookings = new File("C:\\\\Users\\\\sresh\\\\Desktop\\\\HotelBooking\\\\userBookings.txt");
+			this.users.createNewFile();
+			this.userBills.createNewFile();
+			this.userBookings.createNewFile();
+			
 		}
 		catch(IOException e) {
-				System.out.println("Can't display history");
-		}
-		return;
-	}
-}//end of class
-
-
-
-//Restaurant class
-class Restaurant{
-	List<item_detail> menu= new ArrayList<item_detail>();
-	private int revenue = 0;   //price of each item will be added whenever an order is placed.
-	List<Person> customers = new ArrayList<Person>();  //ArrayList to store details of customers.
-	
-	
-	 Restaurant(item_detail...details ) { // I will add the items in the menu through constructor.
-		 	for(item_detail i: details) {
-		 		this.menu.add(i);  //each item will be added to the menu of the restaurant.
-		 	}
-		}
-	
-	 
-	//adding customer 
-	void addCustomer(Person p) {
-		this.customers.add(p);
-		return;
-	}
-	
-	
-   //placing order	
-   void placeOrder(Person p) {
-	   p.orderHistory.clear();   // clearing previous history of list as bill will be calc. for only current visit. History of previous is still stored in orderHistoryFile.
-	   	System.out.println("Enter the item id to place order and -1 to finish ordering");  // taking order by id
-	   	Scanner sc= new Scanner(System.in);
-	   	while(true) {
-	   		int id = sc.nextInt();
-	   		if(id == -1 ) {
-	   			break;
-	   		}
-	   		p.placeOrder(menu.get(id-1));
-	   		this.revenue += (menu.get(id-1)).price;    //adding the price of the placed ordered to the class variable revenue.
-	   	}
-	   	System.out.println("Your order has been placed");
-	   	
-	   }
-	   
-	   
-	   
-    
-	void DisplayPersonHistory(Person p) {  
-		p.displayHistory();
-
-	}
-	 
-	//printing the menu of the restaurant.
-	void displayMenu() {
-		System.out.println("Menu:");
-		for(item_detail i : this.menu) {
-			System.out.println(i.id+" "+i.name+" "+i.price);
+			System.out.println("Error occured !");
 		}
 	}
-	 
-	
-	//displaying the bill of the customer.
-	void displayBill(Person p) {
-		// using orderHistory arrayList of Person class to create bill
-		Iterator itr = p.orderHistory.iterator();
-		int sum = 0;
-		while(itr.hasNext()) {
-			item_detail item =(item_detail) itr.next();
-			System.out.println(item.id+" "+item.name+" "+item.price);
-			sum += item.price;
-		}
-		System.out.println("Total bill is Rs."+sum);
-		return;
-	}
 	
 	
-	int totalRevenue() {
-		return this.revenue;
-	}
-	
-	
-	void displayPremiumCustomer() {
-		
-		for(Person p: this.customers) {
-			Iterator itr = p.orderHistory.iterator();
-			int sum = 0;
-			while(itr.hasNext()) {
-				item_detail item =(item_detail) itr.next();
-				sum += item.price;
-			}
-			if(sum > 1000) {
-				System.out.println(p.name+" "+p.mobile_no);
+	//method to signUp
+	public void signUp(User user) {
+		try {
+			Scanner scanner = new Scanner(System.in);
+			String pass,cpass;
+			FileOutputStream fo = new FileOutputStream(this.users,true);
+			System.out.println("Please enter your password");
+			pass = scanner.next();
+			System.out.println("Please confirm your password");
+			cpass = scanner.next();
+			if(cpass.equals(pass)) {
+				user.password = pass;
+				user.id  = this.idAssigned;
+				String s = user.name +","+user.password+","+this.idAssigned+","+user.age+"\n";  // storing in comma seperated format
+				byte b[] = s.getBytes();
+				fo.write(b);
+				this.idAssigned += 1;
+				System.out.println("Your id is "+this.idAssigned);  
+				System.out.println("Account created ! Please login to continue");
+				fo.close();
+				return;
 			}
 			else {
+				
+				System.out.println("Password does not match !");
+				signUp(user);
+				return;
+			}
+		}
+		catch(IOException e) {
+			System.out.println("Account cannot be created. Try again later !"+e);
+			return;
+		}
+		
+	}
+	
+	// method for login
+	public void login() {
+		try {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter your name (username)");
+		String name = sc.next();
+		System.out.println("Enter your password");
+		String pass = sc.next();
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(this.users)));
+		
+		String currLine;
+		String fname,fpass;
+		while((currLine = br.readLine()) != null) {
+			StringTokenizer st = new StringTokenizer(currLine,",");
+			if((fname = st.nextToken()).equals(name)) {
+				if((fpass = st.nextToken()).equals(pass)) {
+					//successfully logged in
+					this.loggedin = 1;
+					System.out.println("Logged in !");
+					return;
+				}
+				else {
+					System.out.println("Password does not match !");
+					return;
+				}
+			}
+			else {
+				st.nextToken();
+				st.nextToken();
 				continue;
 			}
 		}
+		}
+		catch(IOException e) {
+			System.out.println("Cannot login ! Try again later.");
+			return;
+		}
+	}
+	
+	
+	// method to logout the current user.
+	public void logOut() {
+		this.loggedin = -1;
+		System.out.println("Logged out");
+		return;
+	}
+	
+	
+	//method to check if any user is logged in or not
+	public int checkStatus() {
+		return this.loggedin;
+	}
+	
+	
+	//to display the cities
+	private void displayCities() {
+		System.out.println("Cities in which hotels are available:");
+		Iterator itr = hotels.iterator();
+		while(itr.hasNext()) {
+			System.out.println(((Hotel)(itr.next())).city);
+		}
+		return;
 	}
 	
 	
 	
-	 
-}//end of class
+	//method for selecting the hotel in which user is staying
+	public void hotelBooking(){
+		Scanner scanner = new Scanner(System.in);
+		this.displayCities();
+		System.out.println("Please choose a city:");
+		String c = scanner.next();
+		Iterator itr = hotels.iterator();
+		while(itr.hasNext()) {
+			if(c.equals(((Hotel)itr.next()).city)) {
+				System.out.println("Hotels available :"+((Hotel)itr.next()).name);
+				System.out.println("Do you want to continue? 1/0");
+				int x = scanner.nextInt();
+				if(x == 1) {
+					this.roomBooking((Hotel)itr.next());
+				}
+				else {
+					return;
+				}
+				
+			}
+		}
+	}
+	
+	
+	
+	//method to book a room once a hotel is selected
+	public void roomBooking(Hotel hotel) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Each room has a capacity for two adults. How many rooms do you wanna book?");
+		int numRooms = sc.nextInt();
+		for(int i=0;i<15;i++) {
+			if(hotel.rooms[i] == 0) {  // 0 means room is vacant
+				System.out.println("Enter the numbers of days you want to stay in "+hotel.name);
+				int numDays = sc.nextInt();
+				
+				//check in
+				System.out.println("Please enter the check in date in dd//mm//yyyy format");
+				String checkinDate = sc.next();
+				StringTokenizer st1 = new StringTokenizer(checkinDate);
+				String checkinDay = st1.nextToken();
+				String checkinMonth = st1.nextToken();
+				String checkinYear = st1.nextToken();
+				//checking if the entered date is in right format or not.
+				try {
+					if(!this.isValid(checkinDate)) {
+						throw new InvalidDateFormat("Please enter the date in dd//mm//yyyy format");
+					}
+				}
+				catch(InvalidDateFormat e) {
+					System.out.println(e);
+				}
+				
+				//check out 
+				System.out.println("Please enter the check out date");
+				String checkoutDate = sc.next();
+				StringTokenizer st2 = new StringTokenizer(checkoutDate);
+				String checkoutDay = st2.nextToken();
+				String checkoutMonth = st2.nextToken();
+				String checkoutYear = st2.nextToken();
+				
+				//checking if the entered date is in right format or not.
+				
+				try {
+					if(!this.isValid(checkoutDate)) {
+						throw new InvalidDateFormat("Please enter the date in dd//mm//yyyy format");
+					}
+				}
+				catch(InvalidDateFormat e) {
+					System.out.println(e);
+				}
+				
+				
+				//writing check in and check out date in file userBookings
+				try {
+					FileOutputStream fo =new FileOutputStream(this.userBookings,true);
+					String write = currUser.id+","+hotel.price + "," +numDays+","+","+","+","+checkinDate+","+checkoutDate;
+					byte b[] = write.getBytes();
+					fo.write(b);
+					hotel.rooms[i] = 1;
+					System.out.println("Your room is booked.");
+					return;
+				}
+				catch(IOException e) {
+					System.out.println("Room cannot be booked !");
+					return;
+				}
+			}
+		}	
+	}
+
+	
+	
+	//this will print the bill of the current user.
+	public void getBill() {
+		try {
+			
+			//calculating bill from userBookings file and writing bill in userBills file
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(this.userBookings)));
+			FileOutputStream fo = new FileOutputStream(this.userBills,true);
+			String currLine;
+			int price = 0,numDays = 0;
+			while((currLine = br.readLine()) != null) {
+				StringTokenizer st = new StringTokenizer(currLine,",");
+				
+				//Finding user by Id
+				if(currUser.id == Integer.parseInt(st.nextToken())) {
+					numDays = Integer.parseInt(st.nextToken());
+					price = Integer.parseInt(st.nextToken());
+					break;
+				}
+				else {
+					continue;
+				}
+				
+			}
+			
+			System.out.println("Your bill is: Rs "+(numDays*price));
+			
+			//writing data in userBills file
+			
+			String s = currUser.id+","+(numDays*price);
+			byte b[] = s.getBytes();
+			fo.write(b);
+			fo.close();
+		}
+		catch(IOException e) {
+			System.out.println("Cannot calculate bill. Try again later !");
+		}
+	}
+	
+	
+	
+	// this method will validate the format of the entered date.
+	@Override
+	public boolean isValid(String dateString) {
+		DateFormat sdf = new SimpleDateFormat(this.dateFormat);
+        sdf.setLenient(false);
+        try {
+            sdf.parse(dateString);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
+	}
+}
 
 
 
-//Main class
+
+//Main
 class Main{
-	public static void main(String args[]) throws IOException {
-		
-		// creating restaurant menu
-		item_detail item1 = new item_detail(250,"butter chicken", 1,"chicken","butter","tomato","cream");
-		item_detail item2 = new item_detail(230,"butter paneer", 2,"paneer","butter","tomato","cream");
-		item_detail item3 = new item_detail(150,"mix veg", 3,"potato","tomato","chilli");
-		item_detail item4 = new item_detail(200,"dal makhani", 4,"dal","butter","garlic");
-		item_detail item5 = new item_detail(20,"roti", 5,"wheat");
-		item_detail item6 = new item_detail(180,"pulao", 6,"rice","cinnamon","cardamom");
-		item_detail item7 = new item_detail(220,"custard", 7,"apple","sugar","banana","almond");
-		Restaurant restaurant = new Restaurant(item1,item2,item3,item4,item5,item6,item7);
-		Person  current_customer = null;  
-		
-		System.out.println("Welcome");
+	public static void main(String args[]){
+		HotelBooking myBookingService = new HotelBooking();
+		System.out.println("Choose from the following");
+		System.out.println("1. Login ");
+		System.out.println("2. Signup");
+		System.out.println("3. Exit");
+		System.out.println("************");
+		Scanner sc = new Scanner(System.in);
 		while(true) {
-			System.out.println("********************");
-			System.out.println("1. Display Menu\n2. Total Revenue of Restaurant.\n3. Add Customer.\n4. View Premium Customer.\n5. Place order\n6. Display Bill\n7. Show History\n8. Exit");
-			System.out.println("********************");
-			Scanner sc = new Scanner(System.in);
-			int choice = sc.nextInt();
-			switch(choice) {
+			int opt = sc.nextInt();
+			switch(opt) {
+				
 			case 1:{
-				restaurant.displayMenu();
+				//login
+				myBookingService.login();
+				System.out.println("************");
+				if(myBookingService.checkStatus() == 1) {
+					//Hotel booking	
+					System.out.println("Choose from the following");
+					System.out.println("1. Book a room");
+					System.out.println("2. Bill");
+					System.out.println("3. Logout & Exit");
+					System.out.println("************");
+					while(true) {
+						int opt2 = sc.nextInt();
+						switch(opt2) {
+						case 1 :{
+							// room booking
+							myBookingService.hotelBooking();
+							System.out.println("************");
+							break;
+						}
+						
+						
+						case 2:{
+							//bill generation
+							
+							System.out.println("************");
+							break;
+						}
+						
+						case 3:{
+							// logout current user.
+							
+							myBookingService.logOut();
+							System.exit(0);
+							System.out.println("************");
+							break;
+						}
+					
+						default:{
+							System.out.println("Invalid Option !");
+						}
+						}
+					}
+				}
+				System.out.println("************");
 				break;
 			}
 			
 			case 2:{
-				
-				System.out.println("Total revenue is "+restaurant.totalRevenue());
-				System.out.println("********************");
-				break;
-			}
-			
-			case 3:{
-				System.out.print("Enter your name: ");
+				//sign  up
+				System.out.println("Enter your name (username)");
 				String name = sc.next();
-				System.out.print("\nEnter your mobile number: ");
-				String mobile_no = sc.next();
-				Person p = new Person(name,mobile_no);
-				restaurant.addCustomer(p);
-				current_customer = p;
-				System.out.println("Successfully added !");
-				System.out.println("********************");
+				System.out.println("Enter your age");
+				int age = sc.nextInt();
+				User user = new User(name, age, myBookingService.idAssigned);
+				myBookingService.signUp(user);
+				System.out.println("************");
 				break;
 			}
 			
-			
-			case 4:{
-				restaurant.displayPremiumCustomer();
-				System.out.println("********************");
-				break;
-			}
-			
-			
-			case 5:{
-				try {
-					restaurant.placeOrder(current_customer);
-					System.out.println("********************");
-					
-				}
-				catch(Exception e) {
-					System.out.println("Add yourself to the customer list, before placing the order");
-					System.out.println("********************");
-				}
-				
-				break;
-			}
-			
-			case 6:{
-				try {
-					restaurant.displayBill(current_customer);
-					System.out.println("********************");
-					break;
-				}
-				catch(Exception e) {
-					System.out.println("Your bill is Rs. 0");
-					System.out.println("********************");
-					break;
-				}
-				
-			}
-			case 7:{
-				try {
-					current_customer.displayHistory();
-					System.out.println("********************");
-				}
-				catch(Exception e) {
-					System.out.println("No history to show.");
-					System.out.println("********************");
-				}
-				break;
-			}
-			case 8:{
-				System.out.println("Thank you !");
-				System.out.println("********************");
+			case 3: {
+				//exit
+				myBookingService.logOut();
 				System.exit(0);
-			}
-			default: System.out.println("Invalid Option\n****************");
+				
 			}
 			
+			default:{
+				System.out.println("Invalid choice !");
+				System.out.println("************");
+			}
+			
+			}
 		}
 		
-		
-	
-		
 	}
-}//end of class
+}
 
 
 
