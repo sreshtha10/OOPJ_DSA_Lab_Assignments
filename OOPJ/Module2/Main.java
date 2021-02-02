@@ -290,6 +290,7 @@ class HotelBooking extends CheckDate{
 					String write = currUser.id+","+checkinDate+checkoutDate;
 					byte b[] = write.getBytes();
 					fo.write(b);
+					hotel.rooms[i] = 1;
 					System.out.println("Your room is booked.");
 					return;
 				}
@@ -298,11 +299,19 @@ class HotelBooking extends CheckDate{
 					return;
 				}
 			}
-		}
-		
+		}	
 	}
 
-
+	
+	
+	//this will print the bill of the current user.
+	public void getBill() {
+		
+	}
+	
+	
+	
+	// this method will validate the format of the entered date.
 	@Override
 	public boolean isValid(String dateString) {
 		DateFormat sdf = new SimpleDateFormat(this.dateFormat);
