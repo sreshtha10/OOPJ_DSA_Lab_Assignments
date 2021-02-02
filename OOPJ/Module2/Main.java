@@ -1,6 +1,35 @@
 package project0;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+
+
+//interface DateValidator
+interface DateValidator{
+	boolean isValid(String dateString);
+}
+
+//abstract class to check date
+abstract class CheckDate implements DateValidator{
+	String dateFormat = "dd/mm/yyyy";
+	
+	public void DateValidatorUsingDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+	
+	public abstract boolean isValid(String dateString);
+}
+
+
+
+//custom exception for invalid date format
+class InvalidDateFormat extends Exception{
+	public InvalidDateFormat(String s) {
+		super(s);
+	}
+}
 
 
 class User{
@@ -32,21 +61,25 @@ class Hotel{
 	String name;  // name of the hotel
 	List<Traveller> travellers;
 	String city;   //city in which the hotel is located.
-	int rooms[];   //  1 means room is booked 0 means room is vacant, with 15 rooms
+	int rooms[];  
 	Hotel(String name, String city) {
 		this.name = name;
 		this.city = city;
 		this.travellers = new ArrayList<Traveller>();
 		this.rooms = new int[15];
+		for(int i =0;i<15;i++) {
+			this.rooms[i] = 0;    // initially all rooms will be vacant.
+		}
 	}
 }
 
 
-class HotelBooking{
+class HotelBooking extends CheckDate{
 	
 	List<Hotel> hotels = new ArrayList<Hotel>(); //ArrayList to store all the hotel details  
 	File users;// File which stores the password of different users for login
 	File userBills;   // This file will store the bill of each user.
+	File userBookings; // this will contain the booking dates
 	User currUser;
 	int idAssigned = 0;   // each user will be assigned a different id
 	private int loggedin = -1; // to check if current user is logged in or not.
@@ -64,7 +97,12 @@ class HotelBooking{
 		
 		try {
 			this.users = new File("C:\\Users\\sresh\\Desktop\\HotelBooking\\users.txt");
-			users.createNewFile();
+			this.userBills = new File("C:\\\\Users\\\\sresh\\\\Desktop\\\\HotelBooking\\\\userBills.txt");
+			this.userBookings = new File("C:\\\\Users\\\\sresh\\\\Desktop\\\\HotelBooking\\\\userBookings.txt");
+			this.users.createNewFile();
+			this.userBills.createNewFile();
+			this.userBookings.createNewFile();
+			
 		}
 		catch(IOException e) {
 			System.out.println("Error occured !");
@@ -206,10 +244,72 @@ class HotelBooking{
 		int numRooms = sc.nextInt();
 		for(int i=0;i<15;i++) {
 			if(hotel.rooms[i] == 0) {  // 0 means room is vacant
+				System.out.println("Enter the numbers of days you want to stay in "+hotel.name);
+				int numDays = sc.nextInt();
 				
+				//check in
+				System.out.println("Please enter the check in date in dd-mm-yyyy format");
+				String checkinDate = sc.next();
+				StringTokenizer st1 = new StringTokenizer(checkinDate);
+				String checkinDay = st1.nextToken();
+				String checkinMonth = st1.nextToken();
+				String checkinYear = st1.nextToken();
+				//checking if the entered date is in right format or not.
+				try {
+					if(!this.isValid(checkinDate)) {
+						throw new InvalidDateFormat("Please enter the date in dd//mm//yyyy format");
+					}
+				}
+				catch(InvalidDateFormat e) {
+					System.out.println(e);
+				}
+				
+				//check out 
+				System.out.println("Please enter the check out date");
+				String checkoutDate = sc.next();
+				StringTokenizer st2 = new StringTokenizer(checkoutDate);
+				String checkoutDay = st2.nextToken();
+				String checkoutMonth = st2.nextToken();
+				String checkoutYear = st2.nextToken();
+				
+				//checking if the entered date is in right format or not.
+				
+				try {
+					if(!this.isValid(checkoutDate)) {
+						throw new InvalidDateFormat("Please enter the date in dd//mm//yyyy format");
+					}
+				}
+				catch(InvalidDateFormat e) {
+					System.out.println(e);
+				}
+				
+				
+				//writing check in and check out date in file userBookings
+				try {
+					FileOutputStream fo =new FileOutputStream(this.userBookings,true);
+					System.out.println("Your room is booked.");
+					return;
+				}
+				catch(IOException e) {
+					System.out.println("Room cannot be booked !");
+					return;
+				}
 			}
 		}
 		
+	}
+
+
+	@Override
+	public boolean isValid(String dateString) {
+		DateFormat sdf = new SimpleDateFormat(this.dateFormat);
+        sdf.setLenient(false);
+        try {
+            sdf.parse(dateString);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
 	}
 }
 
