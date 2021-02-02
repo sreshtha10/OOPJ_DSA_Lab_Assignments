@@ -37,9 +37,15 @@ class User{
 	int age;
 	int id;
 	String password;
+	
+	//constructor chaining
 	User(String name,int age,int id){
-		this.name = name;
+		this(name,id);
 		this.age = age;
+	}
+	
+	User(String name,int id){
+		this.name = name;
 		this.id = id;
 	}
 
@@ -149,7 +155,8 @@ class HotelBooking extends CheckDate{
 	}
 	
 	// method for login
-	public void login() {
+	public User login() {
+		User user = null;
 		try {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter your name (username)");
@@ -165,13 +172,16 @@ class HotelBooking extends CheckDate{
 			if((fname = st.nextToken()).equals(name)) {
 				if((fpass = st.nextToken()).equals(pass)) {
 					//successfully logged in
+					int id = Integer.parseInt(st.nextToken());
+					int age = Integer.parseInt(st.nextToken());
 					this.loggedin = 1;
+					user = new User(fname,age,id);
 					System.out.println("Logged in !");
-					return;
+					return user;
 				}
 				else {
 					System.out.println("Password does not match !");
-					return;
+					return user;
 				}
 			}
 			else {
@@ -183,8 +193,8 @@ class HotelBooking extends CheckDate{
 		}
 		catch(IOException e) {
 			System.out.println("Cannot login ! Try again later.");
-			return;
 		}
+		return user;
 	}
 	
 	
@@ -215,9 +225,10 @@ class HotelBooking extends CheckDate{
 	
 	
 	//method for selecting the hotel in which user is staying
-	public void hotelBooking(){
+	public void hotelBooking(User user){
 		Scanner scanner = new Scanner(System.in);
 		this.displayCities();
+		this.currUser = user;
 		System.out.println("Please choose a city:");
 		String c = scanner.next();
 		Iterator itr = hotels.iterator();
@@ -264,6 +275,7 @@ class HotelBooking extends CheckDate{
 				}
 				catch(InvalidDateFormat e) {
 					System.out.println(e);
+					return;
 				}
 
 				StringTokenizer st1 = new StringTokenizer(checkinDate,"/");
@@ -284,6 +296,7 @@ class HotelBooking extends CheckDate{
 				}
 				catch(InvalidDateFormat e) {
 					System.out.println(e);
+					return;
 				}
 				
 				StringTokenizer st2 = new StringTokenizer(checkoutDate,"/");
@@ -304,7 +317,8 @@ class HotelBooking extends CheckDate{
 					System.out.println("Are you a traveller? 1/0");
 					int opt = sc.nextInt();
 					if(opt == 1) {
-						hotel.travellers.add((Traveller) currUser);
+						Traveller t = new Traveller(currUser.name, currUser.age, currUser.id);
+						hotel.travellers.add(t);
 					}
 					else {
 						continue;
@@ -394,13 +408,14 @@ class Main{
 		System.out.println("3. Exit");
 		System.out.println("************");
 		Scanner sc = new Scanner(System.in);
+		User user =null;
 		while(true) {
 			int opt = sc.nextInt();
 			switch(opt) {
 				
 			case 1:{
 				//login
-				myBookingService.login();
+				user = myBookingService.login();
 				System.out.println("************");
 				if(myBookingService.checkStatus() == 1) {
 					//Hotel booking	
@@ -414,7 +429,7 @@ class Main{
 						switch(opt2) {
 						case 1 :{
 							// room booking
-							myBookingService.hotelBooking();
+							myBookingService.hotelBooking(user);
 							System.out.println("************");
 							break;
 						}
@@ -422,14 +437,13 @@ class Main{
 						
 						case 2:{
 							//bill generation
-							
+							myBookingService.getBill();
 							System.out.println("************");
 							break;
 						}
 						
 						case 3:{
 							// logout current user.
-							
 							myBookingService.logOut();
 							System.exit(0);
 							System.out.println("************");
@@ -452,8 +466,8 @@ class Main{
 				String name = sc.next();
 				System.out.println("Enter your age");
 				int age = sc.nextInt();
-				User user = new User(name, age, myBookingService.idAssigned);
-				myBookingService.signUp(user);
+				User user1 = new User(name, age, myBookingService.idAssigned);
+				myBookingService.signUp(user1);
 				System.out.println("************");
 				break;
 			}
