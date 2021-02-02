@@ -248,7 +248,7 @@ class HotelBooking extends CheckDate{
 				int numDays = sc.nextInt();
 				
 				//check in
-				System.out.println("Please enter the check in date in dd-mm-yyyy format");
+				System.out.println("Please enter the check in date in dd//mm//yyyy format");
 				String checkinDate = sc.next();
 				StringTokenizer st1 = new StringTokenizer(checkinDate);
 				String checkinDay = st1.nextToken();
@@ -287,7 +287,7 @@ class HotelBooking extends CheckDate{
 				//writing check in and check out date in file userBookings
 				try {
 					FileOutputStream fo =new FileOutputStream(this.userBookings,true);
-					String write = currUser.id+","+checkinDate+checkoutDate;
+					String write = hotel.name + "," + currUser.id+","+numDays+","+","+checkinDate+","+checkoutDate;
 					byte b[] = write.getBytes();
 					fo.write(b);
 					hotel.rooms[i] = 1;
@@ -306,7 +306,16 @@ class HotelBooking extends CheckDate{
 	
 	//this will print the bill of the current user.
 	public void getBill() {
-		
+		try {
+			
+			//calculating bill from userBookings file and writing bill in userBills file
+			FileInputStream fr = new FileInputStream(userBookings);
+			FileOutputStream fo = new FileOutputStream(userBills,true);
+			
+		}
+		catch(IOException e) {
+			System.out.println("Cannot calculate bill. Try again later !");
+		}
 	}
 	
 	
