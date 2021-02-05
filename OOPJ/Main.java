@@ -2,6 +2,7 @@ package project0;
 
 import java.util.Date;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -131,6 +132,22 @@ class User{
 	
 	public void getEmployeeData() {
 		//display
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\sresh\\Desktop\\OOPJ\\admin.txt")));
+			String currLine;
+			while((currLine = br.readLine()) != null) {
+				StringTokenizer st = new StringTokenizer(currLine,",");
+				if(this.idEntered == Integer.parseInt(st.nextToken()) && this.nameEntered.equals(st.nextToken())) {
+					// successfully found the user
+					System.out.println(currLine);
+					return;
+				}
+			}
+			System.out.println("Employee not found");
+		}
+		catch(IOException exp) {
+			System.out.println("Error occurred !");
+		}
 	}
 }
 
@@ -272,6 +289,8 @@ public class Main {
 				
 				//user
 				User user = null;
+				String name;
+				int id;
 				while(true) {
 					System.out.println("Choose from the following");
 					System.out.println("1. Display User Data");
@@ -281,7 +300,15 @@ public class Main {
 					case 1:{
 						
 						// display user data by name and id
+						System.out.println("Please enter the name");
+						name = sc.next();
+						//throw error
+						System.out.println("Please enter the id");
+						id = sc.nextInt();
+						//throw error
 						
+						user = new User(name, id);
+						user.getEmployeeData();
 						
 						break;
 					}
