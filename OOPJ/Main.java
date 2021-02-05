@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 
 class Employee{
 	int id;
+	//String type = "";
 	String name;
 	Date dob;
 	Department department;
@@ -21,6 +22,7 @@ class Employee{
 
 class Department{
 	int id;
+	//String type = "";
 	String location;
 	Department(int id,String location){
 		this.id = id;
@@ -29,7 +31,7 @@ class Department{
 }
 
 class Manager extends Employee{
-
+	//final String type= "Manager";
 	Manager(int id, String name, Date dob, Department department) {
 		super(id, name, dob, department);
 		
@@ -38,7 +40,7 @@ class Manager extends Employee{
 }
 
 class Clerk extends Employee{
-
+	//final String type = "Clerk";
 	Clerk(int id, String name, Date dob, Department department) {
 		super(id, name, dob, department);
 		
@@ -48,7 +50,7 @@ class Clerk extends Employee{
 
 
 class GDW extends Employee{
-
+	//final String type = "GDW";
 	GDW(int id, String name, Date dob, Department department) {
 		super(id, name, dob, department);
 		
@@ -59,7 +61,7 @@ class GDW extends Employee{
 
 
 class Sales extends Department{
-
+	//final String type = "Sales";
 	Sales(int id, String location) {
 		super(id, location);
 		
@@ -68,16 +70,16 @@ class Sales extends Department{
 }
 
 class Marketing extends Department{
-
+	//final String type = "Marketing";
 	Marketing(int id, String location) {
 		super(id, location);
-		
 	}
 	
 }
 
 
 class Finance extends Department{
+//	final String type = "Finance";
 	Finance(int id, String location) {
 		super(id, location);
 		
@@ -95,10 +97,18 @@ class Admin{
 		this.e = e;
 	}
 	
+	
+	//format of writing data - id,name,dob,depId,depCity
 	public void setEmployeeData() {
 		this.adminFile = new File("C:\\Users\\sresh\\Desktop\\OOPJ\\admin.txt");
 		try {
 			this.adminFile.createNewFile();
+			FileOutputStream fo = new FileOutputStream(this.adminFile,true);
+			String s = e.id+","+e.name+","+e.dob+","+/*e.type+","*+e.department.type+","*/+e.department.id+","+e.department.location+ "\n";
+			byte b[] = s.getBytes();
+			fo.write(b);
+			
+			System.out.println("Data Saved Successfully !");
 		}
 		catch(IOException e) {
 			System.out.println("Error occured");
@@ -107,6 +117,22 @@ class Admin{
 	}
 }
 
+
+// created a class user
+class User{
+	String nameEntered;
+	int idEntered;
+	
+	User(String nameEntered,int idEntered){
+		this.nameEntered= nameEntered;
+		this.idEntered = idEntered;
+	}
+	
+	
+	public void getEmployeeData() {
+		//display
+	}
+}
 
 
 public class Main {
@@ -245,7 +271,7 @@ public class Main {
 				
 				
 				//user
-				
+				User user = null;
 				while(true) {
 					System.out.println("Choose from the following");
 					System.out.println("1. Display User Data");
@@ -255,7 +281,8 @@ public class Main {
 					case 1:{
 						
 						// display user data by name and id
-						System.out.println("Display");
+						
+						
 						break;
 					}
 					
