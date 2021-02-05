@@ -7,6 +7,12 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+class WrongStringException extends Exception{
+	public WrongStringException(String s) {
+		super(s);
+	}
+}
+
 class Employee{
 	int id;
 	//String type = "";
@@ -172,9 +178,9 @@ public class Main {
 				Employee e = null;
 				Department d = null;
 				String name;
-				int id;
+				int id = 0;
 				Date dob = new Date();
-				int dId;
+				int dId = 0;
 				String dCity;
 				while(true) {
 					System.out.println("Choose from the following");
@@ -188,25 +194,49 @@ public class Main {
 						System.out.println("Choose from the following");
 						System.out.println("Enter Employee name");
 						name = sc.next();
-						
-						//throw error
+						try {
+							int check = Integer.parseInt(name);
+							throw new WrongStringException("Wrong Format Exception");
+						}
+						catch(WrongStringException expp) {
+							System.out.println(expp);
+							break;
+						}
+						catch(Exception expp) {
+							//correct format
+						}
 						System.out.println("Enter Employee id");
-						id = sc.nextInt();
+						try {
+							id = sc.nextInt();
+						}
+						catch(Exception expp) {
+							System.out.println("Wrong Format Exception");
+						}
+						
 						//throw error
 						System.out.println("Enter Employee DOB");
 						String dateString = sc.next();
+						
 						//throw error
 						SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
 						try {
 							dob = format.parse(dateString);
 						}
 						catch(ParseException exp) {
-							System.out.println("Wrong Format");
+							System.out.println("Wrong Format exception");
+							break;
 						}
 						
 						//throw error
 						System.out.println("Enter department id");
-					    dId = sc.nextInt();
+						try {
+							dId = sc.nextInt();
+						}
+						catch(Exception exp) {
+							System.out.println("Wrong format exception");
+							break;
+						}
+					    
 					    //throw error
 						System.out.println("Enter department city");
 					    dCity = sc.next();
@@ -290,7 +320,7 @@ public class Main {
 				//user
 				User user = null;
 				String name;
-				int id;
+				int id = 0;
 				while(true) {
 					System.out.println("Choose from the following");
 					System.out.println("1. Display User Data");
@@ -302,9 +332,26 @@ public class Main {
 						// display user data by name and id
 						System.out.println("Please enter the name");
 						name = sc.next();
-						//throw error
+						try {
+							int check = Integer.parseInt(name);
+							throw new WrongStringException("Wrong Format Exception");
+						}
+						catch(WrongStringException expp) {
+							System.out.println(expp);
+							break;
+						}
+						catch(Exception expp) {
+							//correct format
+						}
 						System.out.println("Please enter the id");
-						id = sc.nextInt();
+						try {
+							id = sc.nextInt();
+						}
+						catch(Exception e) {
+							System.out.println("Wrong Format Exception");
+							break;
+						}
+						
 						//throw error
 						
 						user = new User(name, id);
